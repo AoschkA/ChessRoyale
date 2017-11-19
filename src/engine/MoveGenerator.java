@@ -15,14 +15,100 @@ public class MoveGenerator {
         MY_PIECES = chessBoard.WP|chessBoard.WN|chessBoard.WB|chessBoard.WR|chessBoard.WQ; //omitted WK to avoid illegal capture
         OCCUPIED = chessBoard.WP|chessBoard.WN|chessBoard.WB|chessBoard.WR|chessBoard.WQ|chessBoard.WK|chessBoard.BP|chessBoard.BN|chessBoard.BB|chessBoard.BR|chessBoard.BQ|chessBoard.BK;
         EMPTY =~ OCCUPIED;
-        String list= possibleMovesRooks(chessBoard.WR)+
+        String list= possibleMovesWhitePawns(chessBoard.WP, chessBoard.BP)+
+                possibleMovesRooks(chessBoard.WR)+
 				possibleMovesBishops(chessBoard.WB)+
                 possibleMovesKnights(chessBoard.WN)+
-				possibleMovesQueen(chessBoard.WQ);
+				possibleMovesQueen(chessBoard.WQ)+
+                possibleMovesKing(chessBoard.WK);
         return list;
 	}
 //	public static String possibleMovesBlack() {}
-//	public static String possibleMovesWhitePawns() {}
+	public static String possibleMovesWhitePawns(long WP, long BP) {
+        String list="";
+        //x1,y1,x2,y2
+        long PAWN_MOVES=(WP>>7)&NOT_MY_PIECES&OCCUPIED&~Bitmaps.ROW_8&~Bitmaps.COLUMN_A;//capture right
+        long possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+="-"+(index/8+1)+(index%8-1)+(index/8)+(index%8);
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        PAWN_MOVES=(WP>>9)&NOT_MY_PIECES&OCCUPIED&~Bitmaps.ROW_8&~Bitmaps.COLUMN_H;//capture left
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+="-"+(index/8+1)+(index%8+1)+(index/8)+(index%8);
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        PAWN_MOVES=(WP>>8)&EMPTY&~Bitmaps.ROW_8;//move 1 forward
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+="-"+(index/8+1)+(index%8)+(index/8)+(index%8);
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        PAWN_MOVES=(WP>>16)&EMPTY&(EMPTY>>8)&Bitmaps.ROW_4;//move 2 forward
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+="-"+(index/8+2)+(index%8)+(index/8)+(index%8);
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        //y1,y2,Promotion Type,"P"
+        PAWN_MOVES=(WP>>7)&NOT_MY_PIECES&OCCUPIED&Bitmaps.ROW_8&~Bitmaps.COLUMN_A;//pawn promotion by capture right
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+="-"+(index%8-1)+(index%8)+"QP"+(index%8-1)+(index%8)+"RP"+(index%8-1)+(index%8)+"BP"+(index%8-1)+(index%8)+"NP";
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        PAWN_MOVES=(WP>>9)&NOT_MY_PIECES&OCCUPIED&Bitmaps.ROW_8&~Bitmaps.COLUMN_H; //pawn promotion by capture left
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+="-"+(index%8+1)+(index%8)+"QP"+(index%8+1)+(index%8)+"RP"+(index%8+1)+(index%8)+"BP"+(index%8+1)+(index%8)+"NP";
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        PAWN_MOVES=(WP>>8)&EMPTY&Bitmaps.ROW_8;//pawn promotion by move 1 forward
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+="-"+(index%8)+(index%8)+"QP"+(index%8)+(index%8)+"RP"+(index%8)+(index%8)+"BP"+(index%8)+(index%8)+"NP";
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        //y1,y2,"WE"
+        //en passant right
+        possibility = (WP << 1)&BP&Bitmaps.ROW_5&~Bitmaps.COLUMN_A&Bitmaps.EP;//shows piece to remove, not the destination
+        if (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+="-"+(index%8-1)+(index%8)+"WE";
+        }
+        //en passant left
+        possibility = (WP >> 1)&BP&Bitmaps.ROW_5&~Bitmaps.COLUMN_H&Bitmaps.EP;//shows piece to remove, not the destination
+        if (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+="-"+(index%8+1)+(index%8)+"WE";
+        }
+        return list;
+    }
+
 //	public static String possibleMovesBlackPawns() {}
 	public static String possibleMovesKnights(long N) {
         String list="";
@@ -121,7 +207,29 @@ public class MoveGenerator {
 		}
 		return list;
 	}
-//	public static String possibleMovesKing() {}
+	public static String possibleMovesKing(long K) {
+        String list = "";
+        long possibility;
+        int iLocation = Long.numberOfTrailingZeros(K);
+        if (iLocation > 9) {
+            possibility = Bitmaps.KING_SPAN << (iLocation - 9);
+        } else {
+            possibility = Bitmaps.KING_SPAN >> (9 - iLocation);
+        }
+        if (iLocation % 8 < 4) {
+            possibility &= ~Bitmaps.COLUMN_GH & NOT_MY_PIECES;
+        } else {
+            possibility &= ~Bitmaps.COLUMN_AB & NOT_MY_PIECES;
+        }
+        long j = possibility & ~(possibility - 1);
+        while (j != 0) {
+            int index = Long.numberOfTrailingZeros(j);
+            list += "-" + (iLocation / 8) + (iLocation % 8) + (index / 8) + (index % 8);
+            possibility &= ~j;
+            j = possibility & ~(possibility - 1);
+        }
+        return list;
+    }
 	
 	private static long HorizontalVerticalMoves(int s) {
         long binaryS=1L<<s;

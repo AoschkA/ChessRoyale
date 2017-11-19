@@ -15,6 +15,7 @@ public class Bitmaps {
 	public static long QUEEN_SIDE=1085102592571150095L;
 	public static long KING_SPAN=460039L;
 	public static long KNIGHT_SPAN=43234889994L;
+    public static long EP=0;
 
 	public static long ROW_MASKS[] = /*from row1 to row8*/
 		{
