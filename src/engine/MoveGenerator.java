@@ -5,29 +5,41 @@ import src.entities.ChessBoard;
 import java.util.Arrays;
 
 public class MoveGenerator {
-	private static long NOT_MY_PIECES;
+	private static long ENEMY_PIECES;
     private static long MY_PIECES;
     private static long OCCUPIED;
     private static long EMPTY;
 	
 	public static String possibleMovesWhite(ChessBoard chessBoard) {
-		NOT_MY_PIECES =~ (chessBoard.WP|chessBoard.WN|chessBoard.WB|chessBoard.WR|chessBoard.WQ|chessBoard.WK|chessBoard.BK); // BK to avoid illegal capture
+		ENEMY_PIECES =~ (chessBoard.WP|chessBoard.WN|chessBoard.WB|chessBoard.WR|chessBoard.WQ|chessBoard.WK|chessBoard.BK); // BK to avoid illegal capture
         MY_PIECES = chessBoard.WP|chessBoard.WN|chessBoard.WB|chessBoard.WR|chessBoard.WQ; //omitted WK to avoid illegal capture
         OCCUPIED = chessBoard.WP|chessBoard.WN|chessBoard.WB|chessBoard.WR|chessBoard.WQ|chessBoard.WK|chessBoard.BP|chessBoard.BN|chessBoard.BB|chessBoard.BR|chessBoard.BQ|chessBoard.BK;
         EMPTY =~ OCCUPIED;
         String list= possibleMovesWhitePawns(chessBoard.WP, chessBoard.BP)+
                 possibleMovesRooks(chessBoard.WR)+
-				possibleMovesBishops(chessBoard.WB)+
                 possibleMovesKnights(chessBoard.WN)+
+				possibleMovesBishops(chessBoard.WB)+
 				possibleMovesQueen(chessBoard.WQ)+
                 possibleMovesKing(chessBoard.WK);
         return list;
 	}
-//	public static String possibleMovesBlack() {}
+	public static String possibleMovesBlack(ChessBoard chessBoard) {
+        ENEMY_PIECES = ~(chessBoard.BP | chessBoard.BN | chessBoard.BB | chessBoard.BR | chessBoard.BQ | chessBoard.BK | chessBoard.WK);// added WK to avoid illegal capture
+        MY_PIECES = chessBoard.BP | chessBoard.BN | chessBoard.BB | chessBoard.BR | chessBoard.BQ;// omitted BK to avoid illegal capture
+        OCCUPIED = chessBoard.WP | chessBoard.WN | chessBoard.WB | chessBoard.WR | chessBoard.WQ | chessBoard.WK | chessBoard.BP | chessBoard.BN | chessBoard.BB | chessBoard.BR | chessBoard.BQ | chessBoard.BK;
+        EMPTY = ~OCCUPIED;
+        String list = possibleMovesBlackPawns(chessBoard.BP, chessBoard.WP) +
+                possibleMovesRooks(chessBoard.BR) +
+                possibleMovesKnights(chessBoard.BN) +
+                possibleMovesBishops(chessBoard.BB)+
+                possibleMovesQueen(chessBoard.BQ)+
+                possibleMovesKing(chessBoard.BK);
+        return list;
+    }
 	public static String possibleMovesWhitePawns(long WP, long BP) {
         String list="";
         //x1,y1,x2,y2
-        long PAWN_MOVES=(WP>>7)&NOT_MY_PIECES&OCCUPIED&~Bitmaps.ROW_8&~Bitmaps.COLUMN_A;//capture right
+        long PAWN_MOVES=(WP>>7)& ENEMY_PIECES &OCCUPIED&~Bitmaps.ROW_8&~Bitmaps.COLUMN_A;//capture right
         long possibility=PAWN_MOVES&~(PAWN_MOVES-1);
         while (possibility != 0)
         {
@@ -36,7 +48,7 @@ public class MoveGenerator {
             PAWN_MOVES&=~possibility;
             possibility=PAWN_MOVES&~(PAWN_MOVES-1);
         }
-        PAWN_MOVES=(WP>>9)&NOT_MY_PIECES&OCCUPIED&~Bitmaps.ROW_8&~Bitmaps.COLUMN_H;//capture left
+        PAWN_MOVES=(WP>>9)& ENEMY_PIECES &OCCUPIED&~Bitmaps.ROW_8&~Bitmaps.COLUMN_H;//capture left
         possibility=PAWN_MOVES&~(PAWN_MOVES-1);
         while (possibility != 0)
         {
@@ -64,7 +76,7 @@ public class MoveGenerator {
             possibility=PAWN_MOVES&~(PAWN_MOVES-1);
         }
         //y1,y2,Promotion Type,"P"
-        PAWN_MOVES=(WP>>7)&NOT_MY_PIECES&OCCUPIED&Bitmaps.ROW_8&~Bitmaps.COLUMN_A;//pawn promotion by capture right
+        PAWN_MOVES=(WP>>7)& ENEMY_PIECES &OCCUPIED&Bitmaps.ROW_8&~Bitmaps.COLUMN_A;//pawn promotion by capture right
         possibility=PAWN_MOVES&~(PAWN_MOVES-1);
         while (possibility != 0)
         {
@@ -73,7 +85,7 @@ public class MoveGenerator {
             PAWN_MOVES&=~possibility;
             possibility=PAWN_MOVES&~(PAWN_MOVES-1);
         }
-        PAWN_MOVES=(WP>>9)&NOT_MY_PIECES&OCCUPIED&Bitmaps.ROW_8&~Bitmaps.COLUMN_H; //pawn promotion by capture left
+        PAWN_MOVES=(WP>>9)& ENEMY_PIECES &OCCUPIED&Bitmaps.ROW_8&~Bitmaps.COLUMN_H; //pawn promotion by capture left
         possibility=PAWN_MOVES&~(PAWN_MOVES-1);
         while (possibility != 0)
         {
@@ -109,7 +121,84 @@ public class MoveGenerator {
         return list;
     }
 
-//	public static String possibleMovesBlackPawns() {}
+	public static String possibleMovesBlackPawns(long BP, long WP) {
+        String list = "";
+        // x1,y1,x2,y2
+        long PAWN_MOVES = (BP << 7) & ENEMY_PIECES & OCCUPIED & ~Bitmaps.ROW_1 & ~Bitmaps.COLUMN_H;// capture right
+        long possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
+        while (possibility != 0) {
+            int index = Long.numberOfTrailingZeros(possibility);
+            list += "" + (index / 8 - 1) + (index % 8 + 1) + (index / 8) + (index % 8);
+            PAWN_MOVES &= ~possibility;
+            possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
+        }
+        PAWN_MOVES = (BP << 9) & ENEMY_PIECES & OCCUPIED & ~Bitmaps.ROW_1 & ~Bitmaps.COLUMN_A;// capture left
+        possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
+        while (possibility != 0) {
+            int index = Long.numberOfTrailingZeros(possibility);
+            list += "" + (index / 8 - 1) + (index % 8 - 1) + (index / 8) + (index % 8);
+            PAWN_MOVES &= ~possibility;
+            possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
+        }
+        PAWN_MOVES = (BP << 8) & EMPTY & ~Bitmaps.ROW_1;// move 1 forward
+        possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
+        while (possibility != 0) {
+            int index = Long.numberOfTrailingZeros(possibility);
+            list += "" + (index / 8 - 1) + (index % 8) + (index / 8) + (index % 8);
+            PAWN_MOVES &= ~possibility;
+            possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
+        }
+        PAWN_MOVES = (BP << 16) & EMPTY & (EMPTY << 8) & Bitmaps.ROW_5;// move 2 forward
+        possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
+        while (possibility != 0) {
+            int index = Long.numberOfTrailingZeros(possibility);
+            list += "" + (index / 8 - 2) + (index % 8) + (index / 8) + (index % 8);
+            PAWN_MOVES &= ~possibility;
+            possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
+        }
+        // y1,y2,Promotion Type,"P"
+        PAWN_MOVES = (BP << 7) & ENEMY_PIECES & OCCUPIED & Bitmaps.ROW_1 & ~Bitmaps.COLUMN_H;// pawn promotion by capture right
+        possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
+        while (possibility != 0) {
+            int index = Long.numberOfTrailingZeros(possibility);
+            list += "" + (index % 8 + 1) + (index % 8) + "qP" + (index % 8 + 1) + (index % 8) + "rP" + (index % 8 + 1)
+                    + (index % 8) + "bP" + (index % 8 + 1) + (index % 8) + "nP";
+            PAWN_MOVES &= ~possibility;
+            possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
+        }
+        PAWN_MOVES = (BP << 9) & ENEMY_PIECES & OCCUPIED & Bitmaps.ROW_1 & ~Bitmaps.COLUMN_A;// pawn promotion by capture left
+        possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
+        while (possibility != 0) {
+            int index = Long.numberOfTrailingZeros(possibility);
+            list += "" + (index % 8 - 1) + (index % 8) + "qP" + (index % 8 - 1) + (index % 8) + "rP" + (index % 8 - 1)
+                    + (index % 8) + "bP" + (index % 8 - 1) + (index % 8) + "nP";
+            PAWN_MOVES &= ~possibility;
+            possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
+        }
+        PAWN_MOVES = (BP << 8) & EMPTY & Bitmaps.ROW_1;// pawn promotion by move 1 forward
+        possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
+        while (possibility != 0) {
+            int index = Long.numberOfTrailingZeros(possibility);
+            list += "" + (index % 8) + (index % 8) + "qP" + (index % 8) + (index % 8) + "rP" + (index % 8) + (index % 8)
+                    + "bP" + (index % 8) + (index % 8) + "nP";
+            PAWN_MOVES &= ~possibility;
+            possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
+        }
+        // y1,y2,"BE"
+        // en passant right
+        possibility = (BP >> 1) & WP & Bitmaps.ROW_4 & ~Bitmaps.COLUMN_H & Bitmaps.EP;// shows piece to remove, not the destination
+        if (possibility != 0) {
+            int index = Long.numberOfTrailingZeros(possibility);
+            list += "" + (index % 8 + 1) + (index % 8) + "BE";
+        }
+        // en passant left
+        possibility = (BP << 1) & WP & Bitmaps.ROW_4 & ~Bitmaps.COLUMN_A & Bitmaps.EP;// shows piece to remove, not the destination
+        if (possibility != 0) {
+            int index = Long.numberOfTrailingZeros(possibility);
+            list += "" + (index % 8 - 1) + (index % 8) + "BE";
+        }
+        return list;
+    }
 	public static String possibleMovesKnights(long N) {
         String list="";
         long i=N&~(N-1);
@@ -126,10 +215,10 @@ public class MoveGenerator {
             }
             if (iLocation%8<4)
             {
-                possibility &=~Bitmaps.COLUMN_GH&NOT_MY_PIECES;
+                possibility &=~Bitmaps.COLUMN_GH& ENEMY_PIECES;
             }
             else {
-                possibility &=~Bitmaps.COLUMN_AB&NOT_MY_PIECES;
+                possibility &=~Bitmaps.COLUMN_AB& ENEMY_PIECES;
             }
             long j=possibility&~(possibility-1);
             while (j != 0)
@@ -151,7 +240,7 @@ public class MoveGenerator {
 		while(i != 0)
 		{
 			int iLocation=Long.numberOfTrailingZeros(i);
-			possibility=DiagonalMoves(iLocation)&NOT_MY_PIECES;
+			possibility=DiagonalMoves(iLocation)& ENEMY_PIECES;
 			long j=possibility&~(possibility-1);
 			while (j != 0)
 			{
@@ -172,7 +261,7 @@ public class MoveGenerator {
 		while(i != 0)
 		{
 			int iLocation=Long.numberOfTrailingZeros(i);
-			possibility=HorizontalVerticalMoves(iLocation)&NOT_MY_PIECES;
+			possibility=HorizontalVerticalMoves(iLocation)& ENEMY_PIECES;
 			long j=possibility&~(possibility-1);
 			while (j != 0)
 			{
@@ -193,7 +282,7 @@ public class MoveGenerator {
 		while(i != 0)
 		{
 			int iLocation=Long.numberOfTrailingZeros(i);
-			possibility=(HorizontalVerticalMoves(iLocation)|DiagonalMoves(iLocation))&NOT_MY_PIECES;
+			possibility=(HorizontalVerticalMoves(iLocation)|DiagonalMoves(iLocation))& ENEMY_PIECES;
 			long j=possibility&~(possibility-1);
 			while (j != 0)
 			{
@@ -217,9 +306,9 @@ public class MoveGenerator {
             possibility = Bitmaps.KING_SPAN >> (9 - iLocation);
         }
         if (iLocation % 8 < 4) {
-            possibility &= ~Bitmaps.COLUMN_GH & NOT_MY_PIECES;
+            possibility &= ~Bitmaps.COLUMN_GH & ENEMY_PIECES;
         } else {
-            possibility &= ~Bitmaps.COLUMN_AB & NOT_MY_PIECES;
+            possibility &= ~Bitmaps.COLUMN_AB & ENEMY_PIECES;
         }
         long j = possibility & ~(possibility - 1);
         while (j != 0) {
