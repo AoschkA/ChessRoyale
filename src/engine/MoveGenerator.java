@@ -17,14 +17,47 @@ public class MoveGenerator {
         EMPTY =~ OCCUPIED;
         String list= possibleMovesRooks(chessBoard.WR)+
 				possibleMovesBishops(chessBoard.WB)+
+                possibleMovesKnights(chessBoard.WN)+
 				possibleMovesQueen(chessBoard.WQ);
-//        String list = possibleMovesRooks(chessBoard.WR);
         return list;
 	}
 //	public static String possibleMovesBlack() {}
 //	public static String possibleMovesWhitePawns() {}
 //	public static String possibleMovesBlackPawns() {}
-//	public static String possibleMovesKnights() {}
+	public static String possibleMovesKnights(long N) {
+        String list="";
+        long i=N&~(N-1);
+        long possibility;
+        while(i != 0)
+        {
+            int iLocation=Long.numberOfTrailingZeros(i);
+            if (iLocation>18)
+            {
+                possibility= Bitmaps.KNIGHT_SPAN<<(iLocation-18);
+            }
+            else {
+                possibility= Bitmaps.KNIGHT_SPAN>>(18-iLocation);
+            }
+            if (iLocation%8<4)
+            {
+                possibility &=~Bitmaps.COLUMN_GH&NOT_MY_PIECES;
+            }
+            else {
+                possibility &=~Bitmaps.COLUMN_AB&NOT_MY_PIECES;
+            }
+            long j=possibility&~(possibility-1);
+            while (j != 0)
+            {
+                int index=Long.numberOfTrailingZeros(j);
+                list+="-"+(iLocation/8)+(iLocation%8)+(index/8)+(index%8);
+                possibility&=~j;
+                j=possibility&~(possibility-1);
+            }
+            N&=~i;
+            i=N&~(N-1);
+        }
+        return list;
+    }
 	public static String possibleMovesBishops(long B) {
 		String list="";
 		long i=B&~(B-1);
@@ -93,15 +126,15 @@ public class MoveGenerator {
 	private static long HorizontalVerticalMoves(int s) {
         long binaryS=1L<<s;
         long possibilitiesHorizontal = (OCCUPIED - 2 * binaryS) ^ Long.reverse(Long.reverse(OCCUPIED) - 2 * Long.reverse(binaryS));
-        long possibilitiesVertical = ((OCCUPIED&BitmapFactory.COLUMN_MASKS[s % 8]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&BitmapFactory.COLUMN_MASKS[s % 8]) - (2 * Long.reverse(binaryS)));
-        return (possibilitiesHorizontal&BitmapFactory.ROW_MASKS[s / 8]) | (possibilitiesVertical&BitmapFactory.COLUMN_MASKS[s % 8]);
+        long possibilitiesVertical = ((OCCUPIED& Bitmaps.COLUMN_MASKS[s % 8]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED& Bitmaps.COLUMN_MASKS[s % 8]) - (2 * Long.reverse(binaryS)));
+        return (possibilitiesHorizontal& Bitmaps.ROW_MASKS[s / 8]) | (possibilitiesVertical& Bitmaps.COLUMN_MASKS[s % 8]);
     }
 
 	private static long DiagonalMoves(int s) {
 		long binaryS=1L<<s;
-		long possibilitiesDiagonal = ((OCCUPIED&BitmapFactory.DIAGONAL_MASKS[(s / 8) + (s % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&BitmapFactory.DIAGONAL_MASKS[(s / 8) + (s % 8)]) - (2 * Long.reverse(binaryS)));
-		long possibilitiesAntiDiagonal = ((OCCUPIED&BitmapFactory.DIAGONAL2_MASKS[(s / 8) + 7 - (s % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&BitmapFactory.DIAGONAL2_MASKS[(s / 8) + 7 - (s % 8)]) - (2 * Long.reverse(binaryS)));
-		return (possibilitiesDiagonal&BitmapFactory.DIAGONAL_MASKS[(s / 8) + (s % 8)]) | (possibilitiesAntiDiagonal&BitmapFactory.DIAGONAL2_MASKS[(s / 8) + 7 - (s % 8)]);
+		long possibilitiesDiagonal = ((OCCUPIED& Bitmaps.DIAGONAL_MASKS[(s / 8) + (s % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED& Bitmaps.DIAGONAL_MASKS[(s / 8) + (s % 8)]) - (2 * Long.reverse(binaryS)));
+		long possibilitiesAntiDiagonal = ((OCCUPIED& Bitmaps.DIAGONAL2_MASKS[(s / 8) + 7 - (s % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED& Bitmaps.DIAGONAL2_MASKS[(s / 8) + 7 - (s % 8)]) - (2 * Long.reverse(binaryS)));
+		return (possibilitiesDiagonal& Bitmaps.DIAGONAL_MASKS[(s / 8) + (s % 8)]) | (possibilitiesAntiDiagonal& Bitmaps.DIAGONAL2_MASKS[(s / 8) + 7 - (s % 8)]);
 	}
 
 	public static void drawBitboard(long bitBoard) {
