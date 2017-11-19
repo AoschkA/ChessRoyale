@@ -1,8 +1,8 @@
-package engine;
+package src.engine;
 
 import java.util.Arrays;
 
-import entities.ChessBoard;
+import src.entities.ChessBoard;
 
 public class BitBoardCalculations {
 	

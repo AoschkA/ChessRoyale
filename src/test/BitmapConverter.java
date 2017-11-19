@@ -1,6 +1,6 @@
-package test;
+package src.test;
 
-import engine.ChessBoardFactory;
+import src.engine.ChessBoardFactory;
 
 public class BitmapConverter {
 	public static void main(String[] args) throws Exception{

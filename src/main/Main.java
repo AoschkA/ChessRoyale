@@ -1,8 +1,8 @@
-package main;
+package src.main;
 
-import engine.BitmapFactory;
-import engine.ChessBoardFactory;
-import engine.MoveGenerator;
+import src.engine.BitmapFactory;
+import src.engine.ChessBoardFactory;
+import src.engine.MoveGenerator;
 
 public class Main {
 

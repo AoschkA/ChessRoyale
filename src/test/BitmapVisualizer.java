@@ -1,9 +1,9 @@
-package test;
+package src.test;
 
 import java.util.Scanner;
 
-import engine.BitBoardCalculations;
-import engine.ChessBoardFactory;
+import src.engine.BitBoardCalculations;
+import src.engine.ChessBoardFactory;
 
 public class BitmapVisualizer {
 	@SuppressWarnings("resource")

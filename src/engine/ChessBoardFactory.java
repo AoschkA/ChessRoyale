@@ -1,6 +1,6 @@
-package engine;
+package src.engine;
 
-import entities.ChessBoard;
+import src.entities.ChessBoard;
 
 /*
  * PIECE=WHITE/black
@@ -21,8 +21,8 @@ public class ChessBoardFactory {
             {"p","p","p","p","p","p","p","p"},
             {" "," "," "," "," "," "," "," "},
             {" "," "," "," "," "," "," "," "},
-            {"P"," "," "," "," "," "," "," "},
-            {"R"," "," "," "," "," "," "," "},
+            {" "," "," "," "," "," "," "," "},
+            {" "," "," "," "," "," "," "," "},
             {"P","P","P","P","P","P","P","P"},
             {"R","N","B","Q","K","B","N","R"}};
 	
