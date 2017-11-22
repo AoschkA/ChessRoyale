@@ -50,6 +50,95 @@ public class BitBoardCalculations {
 		}
 		return bitboards;
 	}
+
+	public static ChessBoard stringToChessBoard(String chessboardString) {
+        ChessBoard bitboards = new ChessBoard();
+        String binary;
+        for (int i = 0; i < 64; i++) {
+            binary = "0000000000000000000000000000000000000000000000000000000000000000";
+            binary = binary.substring(i+1)+"1"+binary.substring(0, i);
+            switch (chessboardString.charAt(i)) {
+                case 'P':
+                    bitboards.WP += convertStringToBitboard(binary);
+                    break;
+                case 'N':
+                    bitboards.WN += convertStringToBitboard(binary);
+                    break;
+                case 'B':
+                    bitboards.WB += convertStringToBitboard(binary);
+                    break;
+                case 'R':
+                    bitboards.WR += convertStringToBitboard(binary);
+                    break;
+                case 'Q':
+                    bitboards.WQ += convertStringToBitboard(binary);
+                    break;
+                case 'K':
+                    bitboards.WK += convertStringToBitboard(binary);
+                    break;
+                case 'p':
+                    bitboards.BP += convertStringToBitboard(binary);
+                    break;
+                case 'n':
+                    bitboards.BN += convertStringToBitboard(binary);
+                    break;
+                case 'b':
+                    bitboards.BB += convertStringToBitboard(binary);
+                    break;
+                case 'r':
+                    bitboards.BR += convertStringToBitboard(binary);
+                    break;
+                case 'q':
+                    bitboards.BQ += convertStringToBitboard(binary);
+                    break;
+                case 'k':
+                    bitboards.BK += convertStringToBitboard(binary);
+                    break;
+            }
+        }
+        return bitboards;
+    }
+
+	public static String chessBoardToString(ChessBoard board) {
+		String chessboardString = "";
+		// White pieces
+		String WK = convertBitboardToString(board.WK);
+		String WQ = convertBitboardToString(board.WQ);
+		String WB = convertBitboardToString(board.WB);
+		String WN = convertBitboardToString(board.WN);
+		String WR = convertBitboardToString(board.WR);
+		String WP = convertBitboardToString(board.WP);
+		// Black pieces
+        String BK = convertBitboardToString(board.BK);
+        String BQ = convertBitboardToString(board.BQ);
+        String BB = convertBitboardToString(board.BB);
+        String BN = convertBitboardToString(board.BN);
+        String BR = convertBitboardToString(board.BR);
+        String BP = convertBitboardToString(board.BP);
+
+		for (int i=0; i<64; i++) {
+		    if (WK.charAt(i) == 1) chessboardString += "K";
+            else if (WQ.charAt(i) == '1') chessboardString += "Q";
+            else if (WB.charAt(i) == '1') chessboardString += "B";
+            else if (WN.charAt(i) == '1') chessboardString += "N";
+            else if (WR.charAt(i) == '1') chessboardString += "R";
+            else if (WP.charAt(i) == '1') chessboardString += "P";
+            else if (BK.charAt(i) == '1') chessboardString += "k";
+            else if (BQ.charAt(i) == '1') chessboardString += "q";
+            else if (BB.charAt(i) == '1') chessboardString += "b";
+            else if (BN.charAt(i) == '1') chessboardString += "n";
+            else if (BR.charAt(i) == '1') chessboardString += "r";
+            else if (BP.charAt(i) == '1') chessboardString += "p";
+            else chessboardString += "0";
+		}
+		return chessboardString;
+	}
+
+	public static String convertBitboardToString(long bitboard) {
+		String value = Long.toBinaryString(bitboard);
+		String zeros = "0000000000000000000000000000000000000000000000000000000000000000"; //String of 64 zeros
+		return zeros.substring(value.length()) + value;
+	}
 	
 	public static long bitArrayToBitBoard(String[][] bitArray) {
 		String arrayString = bitArrayToBitString(bitArray);

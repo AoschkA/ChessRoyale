@@ -23,6 +23,7 @@ public class MoveGenerator {
                 possibleMovesKing(chessBoard.WK);
         return list;
 	}
+
 	public static String possibleMovesBlack(ChessBoard chessBoard) {
         ENEMY_PIECES = ~(chessBoard.BP | chessBoard.BN | chessBoard.BB | chessBoard.BR | chessBoard.BQ | chessBoard.BK | chessBoard.WK);// added WK to avoid illegal capture
         MY_PIECES = chessBoard.BP | chessBoard.BN | chessBoard.BB | chessBoard.BR | chessBoard.BQ;// omitted BK to avoid illegal capture
@@ -36,7 +37,8 @@ public class MoveGenerator {
                 possibleMovesKing(chessBoard.BK);
         return list;
     }
-	public static String possibleMovesWhitePawns(long WP, long BP) {
+
+    private static String possibleMovesWhitePawns(long WP, long BP) {
         String list="";
         //x1,y1,x2,y2
         long PAWN_MOVES=(WP>>7)& ENEMY_PIECES &OCCUPIED&~Bitmaps.ROW_8&~Bitmaps.COLUMN_A;//capture right
@@ -121,7 +123,7 @@ public class MoveGenerator {
         return list;
     }
 
-	public static String possibleMovesBlackPawns(long BP, long WP) {
+    private static String possibleMovesBlackPawns(long BP, long WP) {
         String list = "";
         // x1,y1,x2,y2
         long PAWN_MOVES = (BP << 7) & ENEMY_PIECES & OCCUPIED & ~Bitmaps.ROW_1 & ~Bitmaps.COLUMN_H;// capture right
@@ -199,7 +201,8 @@ public class MoveGenerator {
         }
         return list;
     }
-	public static String possibleMovesKnights(long N) {
+
+    private static String possibleMovesKnights(long N) {
         String list="";
         long i=N&~(N-1);
         long possibility;
@@ -233,7 +236,8 @@ public class MoveGenerator {
         }
         return list;
     }
-	public static String possibleMovesBishops(long B) {
+
+    private static String possibleMovesBishops(long B) {
 		String list="";
 		long i=B&~(B-1);
 		long possibility;
@@ -254,7 +258,8 @@ public class MoveGenerator {
 		}
 		return list;
 	}
-	public static String possibleMovesRooks(long R) {
+
+    private static String possibleMovesRooks(long R) {
 		String list="";
 		long i=R&~(R-1);
 		long possibility;
@@ -275,7 +280,8 @@ public class MoveGenerator {
         }
         return list;
 	}
-	public static String possibleMovesQueen(long Q) {
+
+    private static String possibleMovesQueen(long Q) {
 		String list="";
 		long i=Q&~(Q-1);
 		long possibility;
@@ -296,7 +302,8 @@ public class MoveGenerator {
 		}
 		return list;
 	}
-	public static String possibleMovesKing(long K) {
+
+    private static String possibleMovesKing(long K) {
         String list = "";
         long possibility;
         int iLocation = Long.numberOfTrailingZeros(K);
@@ -334,7 +341,7 @@ public class MoveGenerator {
 		return (possibilitiesDiagonal& Bitmaps.DIAGONAL_MASKS[(s / 8) + (s % 8)]) | (possibilitiesAntiDiagonal& Bitmaps.DIAGONAL2_MASKS[(s / 8) + 7 - (s % 8)]);
 	}
 
-	public static void drawBitboard(long bitBoard) {
+    private static void drawBitboard(long bitBoard) {
 		String chessBoard[][]=new String[8][8];
 		for (int i=0;i<64;i++) {
 			chessBoard[i/8][i%8]="";
