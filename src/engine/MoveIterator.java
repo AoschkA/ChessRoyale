@@ -3,6 +3,7 @@ package src.engine;
 import src.entities.ChessBoard;
 
 public class MoveIterator {
+    public static int PLAYER;
     public static int PLAYER_WHITE = 1;
     public static int PLAYER_BLACK = 0;
     public static int VERIFIED_DEPTH = 5;
@@ -13,6 +14,9 @@ public class MoveIterator {
                         1. White
                         0. Black
 
+            Alpha Beta pruning source: https://chessprogramming.wikispaces.com/Alpha-Beta
+                alpha: -infinite
+                beta: infinite
      */
 
     public static String alphaBetaMax3(int depth, int alpha, int beta, ChessBoard chessboard, int player, String previousMove) {

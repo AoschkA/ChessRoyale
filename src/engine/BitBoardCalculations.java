@@ -117,7 +117,7 @@ public class BitBoardCalculations {
         String BP = convertBitboardToString(board.BP);
 
 		for (int i=0; i<64; i++) {
-		    if (WK.charAt(i) == 1) chessboardString += "K";
+		    if (WK.charAt(i) == '1') chessboardString += "K";
             else if (WQ.charAt(i) == '1') chessboardString += "Q";
             else if (WB.charAt(i) == '1') chessboardString += "B";
             else if (WN.charAt(i) == '1') chessboardString += "N";
