@@ -15,7 +15,7 @@ public class UCI {
             else if ("isready".equals(inputString)) isReady();
             else if ("ucinewgame".equals(inputString)) newGame();
             else if (inputString.startsWith("position"))newPosition(inputString);
-            else if ("go".equals(inputString)) go();
+            else if (inputString.startsWith("go")) go();
             else if ("print".equals(inputString)) print();
             else if ("quit".equals(inputString)) {
                 quit();
@@ -74,15 +74,18 @@ public class UCI {
 
     private static void go() {
         String result = MoveIterator.alphaBetaMax3(MoveIterator.VERIFIED_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, ChessBoardFactory.chessBoard, MoveIterator.PLAYER, "BBBB");
-        System.out.println(MoveIterator.PLAYER);
-        System.out.println(result);
         String output = "" + ChessBoardFactory.convertToVerticalChar(result.charAt(1)) + ChessBoardFactory.convertToHorizontalChar(result.charAt(0)) +
                 ChessBoardFactory.convertToVerticalChar(result.charAt(3)) + ChessBoardFactory.convertToHorizontalChar(result.charAt(2));
-        System.out.println(output);
+        System.out.println("bestmove "+ output);
     }
 
     private static void print() {
-
+        String player;
+        if (MoveIterator.PLAYER == 1) player = "white";
+        else if (MoveIterator.PLAYER == 0) player = "black";
+        else player = "NOONE";
+        System.out.println("Currently playing as "+player);
+        BitBoardCalculations.drawChessboard(ChessBoardFactory.chessBoard);
     }
 
     private static void quit() {

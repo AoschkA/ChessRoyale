@@ -1,3 +1,5 @@
 .idea
-out
+out/*
+!out/artifacts
 ChessRoyale.iml
+META-INF
