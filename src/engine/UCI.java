@@ -74,9 +74,12 @@ public class UCI {
 
     private static void go() {
         String result = MoveIterator.alphaBetaMax3(MoveIterator.VERIFIED_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, ChessBoardFactory.chessBoard, MoveIterator.PLAYER, "BBBB");
+        String nextMove = MoveIterator.moveStack[3];
         String output = "" + ChessBoardFactory.convertToVerticalChar(result.charAt(1)) + ChessBoardFactory.convertToHorizontalChar(result.charAt(0)) +
                 ChessBoardFactory.convertToVerticalChar(result.charAt(3)) + ChessBoardFactory.convertToHorizontalChar(result.charAt(2));
-        System.out.println("bestmove "+ output);
+        nextMove = "" + ChessBoardFactory.convertToVerticalChar(nextMove.charAt(1)) + ChessBoardFactory.convertToHorizontalChar(nextMove.charAt(0)) +
+                ChessBoardFactory.convertToVerticalChar(nextMove.charAt(3)) + ChessBoardFactory.convertToHorizontalChar(nextMove.charAt(2));
+        System.out.println("bestmove "+ output + " ponder " + nextMove);
     }
 
     private static void print() {
