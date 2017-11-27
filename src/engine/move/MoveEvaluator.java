@@ -201,6 +201,7 @@ public class MoveEvaluator {
     }
 
     private static char occupiedBy(String chessboard, String move) {
+        chessboard = ChessBoardFactory.flipChessboard(chessboard);
         int row_counter = 0;
         int column_counter = 0;
         for (int i = 0; i < Integer.parseInt(move.charAt(2)+""); i++) {
