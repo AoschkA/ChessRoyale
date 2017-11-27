@@ -7,7 +7,7 @@ import src.engine.move.MoveIterator;
 import java.util.Scanner;
 
 public class UCI {
-    private static final String ENGINENAME = "ChessRoyale v0.9.2b";
+    private static final String ENGINENAME = "ChessRoyale v0.9.3b1";
     private static final String AUTHOR = "Jonas Praem";
 
     public static void uciCommunication() {

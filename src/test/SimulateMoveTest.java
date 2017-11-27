@@ -9,7 +9,7 @@ public class SimulateMoveTest {
 
     public static void main(String[] args) {
         ChessBoardFactory.initiateChessBoard();
-        String chessboard = ChessBoardFactory.simulateMove("6050", ChessBoardFactory.chessBoardString);
+        String chessboard = ChessBoardFactory.simulateMove("6050", ChessBoardFactory.getChessBoardString());
         String result = MoveGenerator.possibleMovesWhite(ChessBoardFactory.chessboard);
         System.out.println(result);
         System.out.println(chessboard);

@@ -40,7 +40,7 @@ public class MoveEvaluator {
         if (moves.length != 0) {
             for (String move : moves) {
                 if (move.length() == 4) {
-                    switch (occopiedBy(chessboard, move)) {
+                    switch (occupiedBy(chessboard, move)) {
                         case 'P':
                             counter -= 64;
                             break;
@@ -72,7 +72,7 @@ public class MoveEvaluator {
         if (moves.length != 0) {
             for (String move : moves) {
                 if (move.length() == 4) {
-                    switch (occopiedBy(chessboard, move)) {
+                    switch (occupiedBy(chessboard, move)) {
                         case 'p':
                             counter -= 64;
                             break;
@@ -143,14 +143,7 @@ public class MoveEvaluator {
         for (String move : whiteMoves) {
             if (move.length()==4) counter += 5;
         }
-        String[] kingMoves = MoveGenerator.possibleMovesBlack(ChessBoardFactory.generateChessBoardFromString(chessboard)).split("-");
-        if (kingMoves.length != 0) {
-            for (String move : kingMoves) {
-                if (move.length() == 4) {
-                    if (occopiedBy(chessboard, move) == 'K') counter += -200000*depth;
-                }
-            }
-        }
+        if (counter==0) counter -= 200000; // check mate
         return counter;
     }
 
@@ -161,14 +154,7 @@ public class MoveEvaluator {
         for (String move : blackMoves) {
             if (move.length()==4) counter += 5;
         }
-        String[] kingMoves = MoveGenerator.possibleMovesWhite(ChessBoardFactory.generateChessBoardFromString(chessboard)).split("-");
-        if (kingMoves.length != 0) {
-            for (String move : kingMoves) {
-                if (move.length() == 4) {
-                    if (occopiedBy(chessboard, move) == 'k') counter += -200000*depth;
-                }
-            }
-        }
+        if (counter==0) counter -= 200000; // check mate
         return counter;
     }
 
@@ -214,7 +200,7 @@ public class MoveEvaluator {
         return counter;
     }
 
-    private static char occopiedBy(String chessboard, String move) {
+    private static char occupiedBy(String chessboard, String move) {
         int row_counter = 0;
         int column_counter = 0;
         for (int i = 0; i < Integer.parseInt(move.charAt(2)+""); i++) {

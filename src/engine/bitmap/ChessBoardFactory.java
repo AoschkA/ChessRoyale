@@ -15,7 +15,7 @@ import src.entities.Chessboard;
 
 public class ChessBoardFactory {
 	public static Chessboard chessboard;
-	public static String chessBoardString;
+	private static String chessBoardString;
 	private static String[][] initialChessBoard = {
 
 			//0	  1   2   3   4   5   6   7
@@ -32,6 +32,11 @@ public class ChessBoardFactory {
 		chessboard = BitBoardCalculations.arrayToChessBoard(initialChessBoard);
 		updateChessBoardString();
 	}
+
+	public static String getChessBoardString() {
+	    updateChessBoardString();
+	    return chessBoardString;
+    }
 
 	public static void updateChessBoardString() {
 		chessBoardString = BitBoardCalculations.chessBoardToString(chessboard);

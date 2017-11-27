@@ -1,9 +1,12 @@
 package src.engine.move;
 
 import src.engine.bitmap.Bitmaps;
+import src.engine.bitmap.ChessBoardFactory;
 import src.entities.Chessboard;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class MoveGenerator {
 	private static long ENEMY_PIECES;
@@ -50,10 +53,40 @@ public class MoveGenerator {
 				possibleMovesBishops(chessboard.WB)+
 				possibleMovesQueen(chessboard.WQ)+
                 possibleMovesKing(chessboard.WK);
+        list = IllegalMoveFilterWhite(list.split("-"));
         return list;
 	}
 
 	public static String possibleMovesBlack(Chessboard chessboard) {
+        ENEMY_PIECES = ~(chessboard.BP | chessboard.BN | chessboard.BB | chessboard.BR | chessboard.BQ | chessboard.BK | chessboard.WK);// added WK to avoid illegal capture
+        MY_PIECES = chessboard.BP | chessboard.BN | chessboard.BB | chessboard.BR | chessboard.BQ;// omitted BK to avoid illegal capture
+        OCCUPIED = chessboard.WP | chessboard.WN | chessboard.WB | chessboard.WR | chessboard.WQ | chessboard.WK | chessboard.BP | chessboard.BN | chessboard.BB | chessboard.BR | chessboard.BQ | chessboard.BK;
+        EMPTY = ~OCCUPIED;
+        String list = possibleMovesBlackPawns(chessboard.BP, chessboard.WP) +
+                possibleMovesRooks(chessboard.BR) +
+                possibleMovesKnights(chessboard.BN) +
+                possibleMovesBishops(chessboard.BB)+
+                possibleMovesQueen(chessboard.BQ)+
+                possibleMovesKing(chessboard.BK);
+        list = IllegalMoveFilterBlack(list.split("-"));
+        return list;
+    }
+
+    private static String possibleMovesWhiteNoFilter(Chessboard chessboard) {
+        ENEMY_PIECES =~ (chessboard.WP| chessboard.WN| chessboard.WB| chessboard.WR| chessboard.WQ| chessboard.WK| chessboard.BK); // BK to avoid illegal capture
+        MY_PIECES = chessboard.WP| chessboard.WN| chessboard.WB| chessboard.WR| chessboard.WQ; //omitted WK to avoid illegal capture
+        OCCUPIED = chessboard.WP| chessboard.WN| chessboard.WB| chessboard.WR| chessboard.WQ| chessboard.WK| chessboard.BP| chessboard.BN| chessboard.BB| chessboard.BR| chessboard.BQ| chessboard.BK;
+        EMPTY =~ OCCUPIED;
+        String list= possibleMovesWhitePawns(chessboard.WP, chessboard.BP)+
+                possibleMovesRooks(chessboard.WR)+
+                possibleMovesKnights(chessboard.WN)+
+                possibleMovesBishops(chessboard.WB)+
+                possibleMovesQueen(chessboard.WQ)+
+                possibleMovesKing(chessboard.WK);
+        return list;
+    }
+
+    private static String possibleMovesBlackNoFilter(Chessboard chessboard) {
         ENEMY_PIECES = ~(chessboard.BP | chessboard.BN | chessboard.BB | chessboard.BR | chessboard.BQ | chessboard.BK | chessboard.WK);// added WK to avoid illegal capture
         MY_PIECES = chessboard.BP | chessboard.BN | chessboard.BB | chessboard.BR | chessboard.BQ;// omitted BK to avoid illegal capture
         OCCUPIED = chessboard.WP | chessboard.WN | chessboard.WB | chessboard.WR | chessboard.WQ | chessboard.WK | chessboard.BP | chessboard.BN | chessboard.BB | chessboard.BR | chessboard.BQ | chessboard.BK;
@@ -383,5 +416,49 @@ public class MoveGenerator {
 			System.out.println(Arrays.toString(chessBoard[i]));
 		}
 	}
+
+	private static String IllegalMoveFilterWhite(String[] movelist) {
+        String filtered_movelist = "";
+        for (String move : movelist) {
+            if (move.length() == 4) {
+                String movedboard = ChessBoardFactory.simulateMove(move, ChessBoardFactory.getChessBoardString());
+                String kingPosition = MoveConverter.getPieceCoordinates(movedboard, 'K');
+                if (kingIsSafeWhite(movedboard, kingPosition)) filtered_movelist += move + "-";
+            }
+        }
+        return filtered_movelist;
+    }
+
+    private static String IllegalMoveFilterBlack(String[] movelist) {
+        String filtered_movelist = "";
+        for (String move : movelist) {
+            if (move.length() == 4) {
+                String movedboard = ChessBoardFactory.simulateMove(move, ChessBoardFactory.getChessBoardString());
+                String kingPosition = MoveConverter.getPieceCoordinates(movedboard, 'k');
+                if (kingIsSafeBlack(movedboard, kingPosition)) filtered_movelist += move + "-";
+            }
+        }
+        return filtered_movelist;
+    }
+
+    private static boolean kingIsSafeWhite(String chessboard, String kingPosition) {
+        String[] black_movelist = possibleMovesBlackWithKing(ChessBoardFactory.generateChessBoardFromString(chessboard)).split("-");
+        for (String black_move : black_movelist) {
+            if (black_move.length() == 4)
+                if (black_move.charAt(2) == kingPosition.charAt(0) && black_move.charAt(3) == kingPosition.charAt(1))
+                    return false;
+        }
+        return true;
+    }
+
+    private static boolean kingIsSafeBlack(String chessboard, String kingPosition) {
+        String[] white_movelist = possibleMovesWhiteWithKing(ChessBoardFactory.generateChessBoardFromString(chessboard)).split("-");
+        for (String white_move : white_movelist) {
+            if (white_move.length() == 4)
+                if (white_move.charAt(2) == kingPosition.charAt(0) && white_move.charAt(3) == kingPosition.charAt(1))
+                    return false;
+        }
+        return true;
+    }
 
 }
