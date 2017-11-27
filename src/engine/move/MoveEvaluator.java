@@ -144,6 +144,14 @@ public class MoveEvaluator {
             if (move.length()==4) counter += 5;
         }
         if (counter==0) counter -= 200000; // check mate
+        else {
+            String kingPosition = MoveConverter.getPieceCoordinates(chessboard, 'K');
+            if (!MoveGenerator.whiteKingIsSafe(chessboard, kingPosition)) {
+                // normal check
+                counter -= 150000;
+            }
+        }
+
         return counter;
     }
 
@@ -155,6 +163,13 @@ public class MoveEvaluator {
             if (move.length()==4) counter += 5;
         }
         if (counter==0) counter -= 200000; // check mate
+        else {
+            String kingPosition = MoveConverter.getPieceCoordinates(chessboard, 'k');
+            if (!MoveGenerator.blackKingIsSafe(chessboard, kingPosition)) {
+                // normal check
+                counter -= 150000;
+            }
+        }
         return counter;
     }
 

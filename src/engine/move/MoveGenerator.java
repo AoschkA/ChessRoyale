@@ -4,9 +4,7 @@ import src.engine.bitmap.Bitmaps;
 import src.engine.bitmap.ChessBoardFactory;
 import src.entities.Chessboard;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class MoveGenerator {
 	private static long ENEMY_PIECES;
@@ -423,7 +421,7 @@ public class MoveGenerator {
             if (move.length() == 4) {
                 String movedboard = ChessBoardFactory.simulateMove(move, ChessBoardFactory.getChessBoardString());
                 String kingPosition = MoveConverter.getPieceCoordinates(movedboard, 'K');
-                if (kingIsSafeWhite(movedboard, kingPosition)) filtered_movelist += move + "-";
+                if (whiteKingIsSafe(movedboard, kingPosition)) filtered_movelist += move + "-";
             }
         }
         return filtered_movelist;
@@ -435,13 +433,13 @@ public class MoveGenerator {
             if (move.length() == 4) {
                 String movedboard = ChessBoardFactory.simulateMove(move, ChessBoardFactory.getChessBoardString());
                 String kingPosition = MoveConverter.getPieceCoordinates(movedboard, 'k');
-                if (kingIsSafeBlack(movedboard, kingPosition)) filtered_movelist += move + "-";
+                if (blackKingIsSafe(movedboard, kingPosition)) filtered_movelist += move + "-";
             }
         }
         return filtered_movelist;
     }
 
-    private static boolean kingIsSafeWhite(String chessboard, String kingPosition) {
+    public static boolean whiteKingIsSafe(String chessboard, String kingPosition) {
         String[] black_movelist = possibleMovesBlackWithKing(ChessBoardFactory.generateChessBoardFromString(chessboard)).split("-");
         for (String black_move : black_movelist) {
             if (black_move.length() == 4)
@@ -451,7 +449,7 @@ public class MoveGenerator {
         return true;
     }
 
-    private static boolean kingIsSafeBlack(String chessboard, String kingPosition) {
+    public static boolean blackKingIsSafe(String chessboard, String kingPosition) {
         String[] white_movelist = possibleMovesWhiteWithKing(ChessBoardFactory.generateChessBoardFromString(chessboard)).split("-");
         for (String white_move : white_movelist) {
             if (white_move.length() == 4)
