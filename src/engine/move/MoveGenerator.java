@@ -1,6 +1,7 @@
-package src.engine;
+package src.engine.move;
 
-import src.entities.ChessBoard;
+import src.engine.bitmap.Bitmaps;
+import src.entities.Chessboard;
 
 import java.util.Arrays;
 
@@ -9,32 +10,60 @@ public class MoveGenerator {
     private static long MY_PIECES;
     private static long OCCUPIED;
     private static long EMPTY;
-	
-	public static String possibleMovesWhite(ChessBoard chessBoard) {
-		ENEMY_PIECES =~ (chessBoard.WP|chessBoard.WN|chessBoard.WB|chessBoard.WR|chessBoard.WQ|chessBoard.WK|chessBoard.BK); // BK to avoid illegal capture
-        MY_PIECES = chessBoard.WP|chessBoard.WN|chessBoard.WB|chessBoard.WR|chessBoard.WQ; //omitted WK to avoid illegal capture
-        OCCUPIED = chessBoard.WP|chessBoard.WN|chessBoard.WB|chessBoard.WR|chessBoard.WQ|chessBoard.WK|chessBoard.BP|chessBoard.BN|chessBoard.BB|chessBoard.BR|chessBoard.BQ|chessBoard.BK;
+
+    public static String possibleMovesWhiteWithKing(Chessboard chessboard) {
+        ENEMY_PIECES =~ (chessboard.WP| chessboard.WN| chessboard.WB| chessboard.WR| chessboard.WQ| chessboard.WK);
+        MY_PIECES = chessboard.WP| chessboard.WN| chessboard.WB| chessboard.WR| chessboard.WQ| chessboard.WK;
+        OCCUPIED = chessboard.WP| chessboard.WN| chessboard.WB| chessboard.WR| chessboard.WQ| chessboard.WK| chessboard.BP| chessboard.BN| chessboard.BB| chessboard.BR| chessboard.BQ| chessboard.BK;
         EMPTY =~ OCCUPIED;
-        String list= possibleMovesWhitePawns(chessBoard.WP, chessBoard.BP)+
-                possibleMovesRooks(chessBoard.WR)+
-                possibleMovesKnights(chessBoard.WN)+
-				possibleMovesBishops(chessBoard.WB)+
-				possibleMovesQueen(chessBoard.WQ)+
-                possibleMovesKing(chessBoard.WK);
+        String list= possibleMovesWhitePawns(chessboard.WP, chessboard.BP)+
+                possibleMovesRooks(chessboard.WR)+
+                possibleMovesKnights(chessboard.WN)+
+                possibleMovesBishops(chessboard.WB)+
+                possibleMovesQueen(chessboard.WQ)+
+                possibleMovesKing(chessboard.WK);
+        return list;
+    }
+
+    public static String possibleMovesBlackWithKing(Chessboard chessboard) {
+        ENEMY_PIECES = ~(chessboard.BP | chessboard.BN | chessboard.BB | chessboard.BR | chessboard.BQ | chessboard.BK);
+        MY_PIECES = chessboard.BP | chessboard.BN | chessboard.BB | chessboard.BR | chessboard.BQ| chessboard.BK;
+        OCCUPIED = chessboard.WP | chessboard.WN | chessboard.WB | chessboard.WR | chessboard.WQ | chessboard.WK | chessboard.BP | chessboard.BN | chessboard.BB | chessboard.BR | chessboard.BQ | chessboard.BK;
+        EMPTY = ~OCCUPIED;
+        String list = possibleMovesBlackPawns(chessboard.BP, chessboard.WP) +
+                possibleMovesRooks(chessboard.BR) +
+                possibleMovesKnights(chessboard.BN) +
+                possibleMovesBishops(chessboard.BB)+
+                possibleMovesQueen(chessboard.BQ)+
+                possibleMovesKing(chessboard.BK);
+        return list;
+    }
+	
+	public static String possibleMovesWhite(Chessboard chessboard) {
+		ENEMY_PIECES =~ (chessboard.WP| chessboard.WN| chessboard.WB| chessboard.WR| chessboard.WQ| chessboard.WK| chessboard.BK); // BK to avoid illegal capture
+        MY_PIECES = chessboard.WP| chessboard.WN| chessboard.WB| chessboard.WR| chessboard.WQ; //omitted WK to avoid illegal capture
+        OCCUPIED = chessboard.WP| chessboard.WN| chessboard.WB| chessboard.WR| chessboard.WQ| chessboard.WK| chessboard.BP| chessboard.BN| chessboard.BB| chessboard.BR| chessboard.BQ| chessboard.BK;
+        EMPTY =~ OCCUPIED;
+        String list= possibleMovesWhitePawns(chessboard.WP, chessboard.BP)+
+                possibleMovesRooks(chessboard.WR)+
+                possibleMovesKnights(chessboard.WN)+
+				possibleMovesBishops(chessboard.WB)+
+				possibleMovesQueen(chessboard.WQ)+
+                possibleMovesKing(chessboard.WK);
         return list;
 	}
 
-	public static String possibleMovesBlack(ChessBoard chessBoard) {
-        ENEMY_PIECES = ~(chessBoard.BP | chessBoard.BN | chessBoard.BB | chessBoard.BR | chessBoard.BQ | chessBoard.BK | chessBoard.WK);// added WK to avoid illegal capture
-        MY_PIECES = chessBoard.BP | chessBoard.BN | chessBoard.BB | chessBoard.BR | chessBoard.BQ;// omitted BK to avoid illegal capture
-        OCCUPIED = chessBoard.WP | chessBoard.WN | chessBoard.WB | chessBoard.WR | chessBoard.WQ | chessBoard.WK | chessBoard.BP | chessBoard.BN | chessBoard.BB | chessBoard.BR | chessBoard.BQ | chessBoard.BK;
+	public static String possibleMovesBlack(Chessboard chessboard) {
+        ENEMY_PIECES = ~(chessboard.BP | chessboard.BN | chessboard.BB | chessboard.BR | chessboard.BQ | chessboard.BK | chessboard.WK);// added WK to avoid illegal capture
+        MY_PIECES = chessboard.BP | chessboard.BN | chessboard.BB | chessboard.BR | chessboard.BQ;// omitted BK to avoid illegal capture
+        OCCUPIED = chessboard.WP | chessboard.WN | chessboard.WB | chessboard.WR | chessboard.WQ | chessboard.WK | chessboard.BP | chessboard.BN | chessboard.BB | chessboard.BR | chessboard.BQ | chessboard.BK;
         EMPTY = ~OCCUPIED;
-        String list = possibleMovesBlackPawns(chessBoard.BP, chessBoard.WP) +
-                possibleMovesRooks(chessBoard.BR) +
-                possibleMovesKnights(chessBoard.BN) +
-                possibleMovesBishops(chessBoard.BB)+
-                possibleMovesQueen(chessBoard.BQ)+
-                possibleMovesKing(chessBoard.BK);
+        String list = possibleMovesBlackPawns(chessboard.BP, chessboard.WP) +
+                possibleMovesRooks(chessboard.BR) +
+                possibleMovesKnights(chessboard.BN) +
+                possibleMovesBishops(chessboard.BB)+
+                possibleMovesQueen(chessboard.BQ)+
+                possibleMovesKing(chessboard.BK);
         return list;
     }
 
@@ -130,7 +159,7 @@ public class MoveGenerator {
         long possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
         while (possibility != 0) {
             int index = Long.numberOfTrailingZeros(possibility);
-            list += "" + (index / 8 - 1) + (index % 8 + 1) + (index / 8) + (index % 8);
+            list += "-" + (index / 8 - 1) + (index % 8 + 1) + (index / 8) + (index % 8);
             PAWN_MOVES &= ~possibility;
             possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
         }
@@ -138,7 +167,7 @@ public class MoveGenerator {
         possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
         while (possibility != 0) {
             int index = Long.numberOfTrailingZeros(possibility);
-            list += "" + (index / 8 - 1) + (index % 8 - 1) + (index / 8) + (index % 8);
+            list += "-" + (index / 8 - 1) + (index % 8 - 1) + (index / 8) + (index % 8);
             PAWN_MOVES &= ~possibility;
             possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
         }
@@ -146,7 +175,7 @@ public class MoveGenerator {
         possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
         while (possibility != 0) {
             int index = Long.numberOfTrailingZeros(possibility);
-            list += "" + (index / 8 - 1) + (index % 8) + (index / 8) + (index % 8);
+            list += "-" + (index / 8 - 1) + (index % 8) + (index / 8) + (index % 8);
             PAWN_MOVES &= ~possibility;
             possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
         }
@@ -154,7 +183,7 @@ public class MoveGenerator {
         possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
         while (possibility != 0) {
             int index = Long.numberOfTrailingZeros(possibility);
-            list += "" + (index / 8 - 2) + (index % 8) + (index / 8) + (index % 8);
+            list += "-" + (index / 8 - 2) + (index % 8) + (index / 8) + (index % 8);
             PAWN_MOVES &= ~possibility;
             possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
         }
@@ -163,7 +192,7 @@ public class MoveGenerator {
         possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
         while (possibility != 0) {
             int index = Long.numberOfTrailingZeros(possibility);
-            list += "" + (index % 8 + 1) + (index % 8) + "qP" + (index % 8 + 1) + (index % 8) + "rP" + (index % 8 + 1)
+            list += "-" + (index % 8 + 1) + (index % 8) + "qP" + (index % 8 + 1) + (index % 8) + "rP" + (index % 8 + 1)
                     + (index % 8) + "bP" + (index % 8 + 1) + (index % 8) + "nP";
             PAWN_MOVES &= ~possibility;
             possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
@@ -172,7 +201,7 @@ public class MoveGenerator {
         possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
         while (possibility != 0) {
             int index = Long.numberOfTrailingZeros(possibility);
-            list += "" + (index % 8 - 1) + (index % 8) + "qP" + (index % 8 - 1) + (index % 8) + "rP" + (index % 8 - 1)
+            list += "-" + (index % 8 - 1) + (index % 8) + "qP" + (index % 8 - 1) + (index % 8) + "rP" + (index % 8 - 1)
                     + (index % 8) + "bP" + (index % 8 - 1) + (index % 8) + "nP";
             PAWN_MOVES &= ~possibility;
             possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
@@ -181,7 +210,7 @@ public class MoveGenerator {
         possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
         while (possibility != 0) {
             int index = Long.numberOfTrailingZeros(possibility);
-            list += "" + (index % 8) + (index % 8) + "qP" + (index % 8) + (index % 8) + "rP" + (index % 8) + (index % 8)
+            list += "-" + (index % 8) + (index % 8) + "qP" + (index % 8) + (index % 8) + "rP" + (index % 8) + (index % 8)
                     + "bP" + (index % 8) + (index % 8) + "nP";
             PAWN_MOVES &= ~possibility;
             possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);

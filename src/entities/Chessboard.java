@@ -1,6 +1,6 @@
 package src.entities;
 
-public class ChessBoard {
+public class Chessboard {
 	// White bitboards
 	public long WP=0L;
 	public long WN=0L;

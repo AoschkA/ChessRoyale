@@ -1,4 +1,4 @@
-package src.engine;
+package src.engine.bitmap;
 
 public class Bitmaps {
 	public static long COLUMN_A=72340172838076673L;

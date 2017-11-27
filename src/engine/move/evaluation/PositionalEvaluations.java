@@ -1,4 +1,4 @@
-package src.engine.evaluation;
+package src.engine.move.evaluation;
 
 public class PositionalEvaluations {
 

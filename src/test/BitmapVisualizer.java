@@ -2,8 +2,8 @@ package src.test;
 
 import java.util.Scanner;
 
-import src.engine.BitBoardCalculations;
-import src.engine.ChessBoardFactory;
+import src.engine.bitmap.BitBoardCalculations;
+import src.engine.bitmap.ChessBoardFactory;
 
 public class BitmapVisualizer {
 	@SuppressWarnings("resource")
@@ -11,7 +11,7 @@ public class BitmapVisualizer {
         String operation;
         Scanner consoleinput = new Scanner(System.in);
         ChessBoardFactory.initiateChessBoard();
-		BitBoardCalculations.drawChessboard(ChessBoardFactory.chessBoard);
+		BitBoardCalculations.drawChessboard(ChessBoardFactory.chessboard);
         System.out.println("Please enter bitmap: ");
         while(true)
         {

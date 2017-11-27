@@ -1,11 +1,13 @@
-package src.engine;
+package src.engine.move;
 
-import src.engine.evaluation.PositionalEvaluations;
-import src.entities.ChessBoard;
+import src.engine.bitmap.BitBoardCalculations;
+import src.engine.bitmap.ChessBoardFactory;
+import src.engine.move.evaluation.PositionalEvaluations;
+import src.entities.Chessboard;
 
 public class MoveEvaluator {
 
-    public static int evaluateChessboard(ChessBoard chessboard, int player) {
+    public static int evaluateChessboard(Chessboard chessboard, int player, int depth) {
         int counter = 0;
         String chessboardString = BitBoardCalculations.chessBoardToString(chessboard);
         if (player == 1) {
@@ -14,6 +16,8 @@ public class MoveEvaluator {
             counter += rateAttackWhite(chessboardString);
             counter -= rateAttackBlack(chessboardString);
             counter += ratePositionalWhite(chessboardString);
+            counter += rateMobilityWhite(chessboardString, depth);
+            counter -= rateMobilityBlack(chessboardString, depth);
             chessboardString = ChessBoardFactory.flipChessboard(chessboardString); // Flip board for positional evaluation
             counter -= ratePositionalBlack(chessboardString);
         } else {
@@ -22,6 +26,8 @@ public class MoveEvaluator {
             counter += rateAttackBlack(chessboardString);
             counter -= rateAttackWhite(chessboardString);
             counter -= ratePositionalWhite(chessboardString);
+            counter += rateMobilityBlack(chessboardString, depth);
+            counter -= rateMobilityWhite(chessboardString, depth);
             chessboardString = ChessBoardFactory.flipChessboard(chessboardString); // Flip board for positional evaluation
             counter += ratePositionalBlack(chessboardString);
         }
@@ -130,17 +136,40 @@ public class MoveEvaluator {
         return counter;
     }
 
-    private static int rateMobility(int possibleMoves, int depth, int materialRating) {
+    private static int rateMobilityWhite(String chessboard, int depth) {
         int counter = 0;
-        counter += possibleMoves*5; // 5 points for every move
-        // Checkmate or stalemate
-        if (possibleMoves == 0) {
-            // if !kingSafe / checkmate
-            // counter +=-200000*depth
-            // else / stalemate
-            // counter +=-150000*depth
+        String[] whiteMoves = MoveGenerator.possibleMovesWhite(ChessBoardFactory.generateChessBoardFromString(chessboard)).split("-");
+        // 5 points for every move
+        for (String move : whiteMoves) {
+            if (move.length()==4) counter += 5;
         }
-        return 0;
+        String[] kingMoves = MoveGenerator.possibleMovesBlack(ChessBoardFactory.generateChessBoardFromString(chessboard)).split("-");
+        if (kingMoves.length != 0) {
+            for (String move : kingMoves) {
+                if (move.length() == 4) {
+                    if (occopiedBy(chessboard, move) == 'K') counter += -200000*depth;
+                }
+            }
+        }
+        return counter;
+    }
+
+    private static int rateMobilityBlack(String chessboard, int depth) {
+        int counter = 0;
+        String[] blackMoves = MoveGenerator.possibleMovesBlack(ChessBoardFactory.generateChessBoardFromString(chessboard)).split("-");
+        // 5 points for every move
+        for (String move : blackMoves) {
+            if (move.length()==4) counter += 5;
+        }
+        String[] kingMoves = MoveGenerator.possibleMovesWhite(ChessBoardFactory.generateChessBoardFromString(chessboard)).split("-");
+        if (kingMoves.length != 0) {
+            for (String move : kingMoves) {
+                if (move.length() == 4) {
+                    if (occopiedBy(chessboard, move) == 'k') counter += -200000*depth;
+                }
+            }
+        }
+        return counter;
     }
 
     private static int ratePositionalWhite(String chessboard) {

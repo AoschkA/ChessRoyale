@@ -1,6 +1,6 @@
-package src.engine;
+package src.engine.bitmap;
 
-import src.entities.ChessBoard;
+import src.entities.Chessboard;
 
 /*
  * PIECE=WHITE/black
@@ -14,7 +14,7 @@ import src.entities.ChessBoard;
  */
 
 public class ChessBoardFactory {
-	public static ChessBoard chessBoard;
+	public static Chessboard chessboard;
 	public static String chessBoardString;
 	private static String[][] initialChessBoard = {
 
@@ -29,12 +29,12 @@ public class ChessBoardFactory {
             {"R","N","B","Q","K","B","N","R"}};// 7
 	
 	public static void initiateChessBoard() {
-		chessBoard = BitBoardCalculations.arrayToChessBoard(initialChessBoard);
+		chessboard = BitBoardCalculations.arrayToChessBoard(initialChessBoard);
 		updateChessBoardString();
 	}
 
 	public static void updateChessBoardString() {
-		chessBoardString = BitBoardCalculations.chessBoardToString(chessBoard);
+		chessBoardString = BitBoardCalculations.chessBoardToString(chessboard);
 	}
 
 	public static String simulateMove(String move, String chessBoardString) {
@@ -67,14 +67,14 @@ public class ChessBoardFactory {
 		return board;
 	}
 
-	public static ChessBoard generateChessBoardFromString(String chessBoardString) {
+	public static Chessboard generateChessBoardFromString(String chessBoardString) {
         chessBoardString = flipChessboard(chessBoardString);
-		ChessBoard result = BitBoardCalculations.stringToChessBoard(chessBoardString);
+		Chessboard result = BitBoardCalculations.stringToChessBoard(chessBoardString);
 		return result;
 	}
 
 	public static void importFEN(String fen) {
-        ChessBoard chessboard = new ChessBoard();
+        Chessboard chessboard = new Chessboard();
 	    int charIndex = 0;
         int boardIndex = 0;
         while (fen.charAt(charIndex) != ' ') {
@@ -124,7 +124,7 @@ public class ChessBoardFactory {
             }
         }
         BitBoardCalculations.drawChessboard(chessboard);
-        chessBoard = chessboard;
+        ChessBoardFactory.chessboard = chessboard;
         updateChessBoardString();
     }
 
@@ -132,9 +132,9 @@ public class ChessBoardFactory {
 	    System.out.println(chessBoardString);
 	    String movedChessboard = simulateMove(move, chessBoardString);
         System.out.println(movedChessboard);
-        chessBoard = generateChessBoardFromString(movedChessboard);
+        chessboard = generateChessBoardFromString(movedChessboard);
         updateChessBoardString();
-        BitBoardCalculations.drawChessboard(chessBoard);
+        BitBoardCalculations.drawChessboard(chessboard);
     }
 
     public static char convertToVerticalChar(char i) {

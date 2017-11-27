@@ -1,6 +1,6 @@
 package src.main;
 
-import src.engine.*;
+import src.io.UCI;
 
 public class Main {
 

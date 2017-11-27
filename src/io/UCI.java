@@ -1,9 +1,13 @@
-package src.engine;
+package src.io;
+
+import src.engine.bitmap.BitBoardCalculations;
+import src.engine.bitmap.ChessBoardFactory;
+import src.engine.move.MoveIterator;
 
 import java.util.Scanner;
 
 public class UCI {
-    private static final String ENGINENAME = "ChessRoyale";
+    private static final String ENGINENAME = "ChessRoyale v0.9.2b";
     private static final String AUTHOR = "Jonas Praem";
 
     public static void uciCommunication() {
@@ -21,6 +25,8 @@ public class UCI {
                 quit();
                 break;
             }
+            // None UCI communication
+            else if (inputString.startsWith("possiblemoves")) NoneUCICommunication.possibleMoves(inputString);
         }
         input.close();
     }
@@ -30,6 +36,7 @@ public class UCI {
         System.out.println("id author "+AUTHOR);
         // options if any
         ChessBoardFactory.initiateChessBoard();
+        MoveIterator.PLAYER = MoveIterator.PLAYER_BLACK;
         System.out.println("uciok");
     }
 
@@ -73,8 +80,8 @@ public class UCI {
     }
 
     private static void go() {
-        String result = MoveIterator.alphaBetaMax3(MoveIterator.VERIFIED_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, ChessBoardFactory.chessBoard, MoveIterator.PLAYER, "BBBB");
-        String nextMove = MoveIterator.moveStack[3];
+        String result = MoveIterator.alphaBetaMax(MoveIterator.VERIFIED_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, ChessBoardFactory.chessboard, MoveIterator.PLAYER, "BBBB");
+        String nextMove = result.substring(0, 4);
         String output = "" + ChessBoardFactory.convertToVerticalChar(result.charAt(1)) + ChessBoardFactory.convertToHorizontalChar(result.charAt(0)) +
                 ChessBoardFactory.convertToVerticalChar(result.charAt(3)) + ChessBoardFactory.convertToHorizontalChar(result.charAt(2));
         nextMove = "" + ChessBoardFactory.convertToVerticalChar(nextMove.charAt(1)) + ChessBoardFactory.convertToHorizontalChar(nextMove.charAt(0)) +
@@ -88,7 +95,7 @@ public class UCI {
         else if (MoveIterator.PLAYER == 0) player = "black";
         else player = "NOONE";
         System.out.println("Currently playing as "+player);
-        BitBoardCalculations.drawChessboard(ChessBoardFactory.chessBoard);
+        BitBoardCalculations.drawChessboard(ChessBoardFactory.chessboard);
     }
 
     private static void quit() {
@@ -96,7 +103,7 @@ public class UCI {
     }
 
     private static void makeMove(String input) {
-        BitBoardCalculations.drawChessboard(ChessBoardFactory.chessBoard);
+        BitBoardCalculations.drawChessboard(ChessBoardFactory.chessboard);
         int moveFrom_vertical = (input.charAt(0)-'a');
         int moveFrom_horizontal = ('8'-input.charAt(1));
         int moveTo_vertical = input.charAt(2)-'a';

@@ -1,8 +1,8 @@
-package src.engine;
+package src.engine.bitmap;
 
 import java.util.Arrays;
 
-import src.entities.ChessBoard;
+import src.entities.Chessboard;
 
 public class BitBoardCalculations {
 	
@@ -15,8 +15,8 @@ public class BitBoardCalculations {
         }
     }
 	
-	public static ChessBoard arrayToChessBoard(String[][] chessBoard) {
-		ChessBoard bitboards = new ChessBoard();
+	public static Chessboard arrayToChessBoard(String[][] chessBoard) {
+		Chessboard bitboards = new Chessboard();
 		String binary;
 		for (int i = 0; i < 64; i++) {
 			binary = "0000000000000000000000000000000000000000000000000000000000000000";
@@ -51,8 +51,8 @@ public class BitBoardCalculations {
 		return bitboards;
 	}
 
-	public static ChessBoard stringToChessBoard(String chessboardString) {
-        ChessBoard bitboards = new ChessBoard();
+	public static Chessboard stringToChessBoard(String chessboardString) {
+        Chessboard bitboards = new Chessboard();
         String binary;
         for (int i = 0; i < 64; i++) {
             binary = "0000000000000000000000000000000000000000000000000000000000000000";
@@ -99,7 +99,7 @@ public class BitBoardCalculations {
         return bitboards;
     }
 
-	public static String chessBoardToString(ChessBoard board) {
+	public static String chessBoardToString(Chessboard board) {
 		String chessboardString = "";
 		// White pieces
 		String WK = convertBitboardToString(board.WK);
@@ -156,7 +156,7 @@ public class BitBoardCalculations {
 	    return s;
 	}
 	
-	public static void drawChessboard(ChessBoard bitboards) {
+	public static void drawChessboard(Chessboard bitboards) {
         String chessBoardArray[][] = new String[8][8];
         for (int i=0;i<64;i++) {
         	chessBoardArray[i/8][i%8]=" ";
