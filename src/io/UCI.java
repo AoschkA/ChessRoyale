@@ -82,7 +82,7 @@ public class UCI {
     }
 
     private static void go() {
-        String result = MoveIterator.alphaBetaMax2(MoveIterator.VERIFIED_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, MoveIterator.PLAYER, ChessBoardFactory.chessboard);
+        String result = MoveIterator.alphaBetaMax(MoveIterator.VERIFIED_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, MoveIterator.PLAYER, ChessBoardFactory.chessboard);
         System.out.println("result "+ result);
         try {
             result = MoveConverter.toCoordinateMove(result.substring(result.length()-4, result.length()));
