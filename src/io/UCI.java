@@ -2,7 +2,9 @@ package src.io;
 
 import src.engine.bitmap.BitBoardCalculations;
 import src.engine.bitmap.ChessBoardFactory;
+import src.engine.move.MoveConverter;
 import src.engine.move.MoveIterator;
+import src.exceptions.InvalidMoveException;
 
 import java.util.Scanner;
 
@@ -80,13 +82,14 @@ public class UCI {
     }
 
     private static void go() {
-        String result = MoveIterator.alphaBetaMax(MoveIterator.VERIFIED_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, ChessBoardFactory.chessboard, MoveIterator.PLAYER, "BBBB");
-        String nextMove = result.substring(0, 4);
-        String output = "" + ChessBoardFactory.convertToVerticalChar(result.charAt(1)) + ChessBoardFactory.convertToHorizontalChar(result.charAt(0)) +
-                ChessBoardFactory.convertToVerticalChar(result.charAt(3)) + ChessBoardFactory.convertToHorizontalChar(result.charAt(2));
-        nextMove = "" + ChessBoardFactory.convertToVerticalChar(nextMove.charAt(1)) + ChessBoardFactory.convertToHorizontalChar(nextMove.charAt(0)) +
-                ChessBoardFactory.convertToVerticalChar(nextMove.charAt(3)) + ChessBoardFactory.convertToHorizontalChar(nextMove.charAt(2));
-        System.out.println("bestmove "+ output + " ponder " + nextMove);
+        String result = MoveIterator.alphaBetaMax2(MoveIterator.VERIFIED_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, MoveIterator.PLAYER, ChessBoardFactory.chessboard);
+        System.out.println("result "+ result);
+        try {
+            result = MoveConverter.toCoordinateMove(result.substring(result.length()-4, result.length()));
+        } catch (InvalidMoveException e) {
+            System.out.println("UNCAUGHT MOVE EXCEPTION");
+        }
+        System.out.println("bestmove "+ result);
     }
 
     private static void print() {
