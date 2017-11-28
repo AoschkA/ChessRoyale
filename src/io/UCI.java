@@ -9,7 +9,7 @@ import src.exceptions.InvalidMoveException;
 import java.util.Scanner;
 
 public class UCI {
-    private static final String ENGINENAME = "ChessRoyale v0.9.3b1";
+    private static final String ENGINENAME = "ChessRoyale v0.9.4";
     private static final String AUTHOR = "Jonas Praem";
 
     public static void uciCommunication() {
