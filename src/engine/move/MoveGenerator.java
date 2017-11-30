@@ -420,8 +420,10 @@ public class MoveGenerator {
         for (String move : movelist) {
             if (move.length() == 4) {
                 String movedboard = ChessBoardFactory.simulateMove(move, ChessBoardFactory.getChessBoardString());
-                String kingPosition = MoveConverter.getPieceCoordinates(movedboard, 'K');
-                if (whiteKingIsSafe(movedboard, kingPosition)) filtered_movelist += move + "-";
+                if (!movedboard.equals("BBBB")) {
+                    String kingPosition = MoveConverter.getPieceCoordinates(movedboard, 'K');
+                    if (whiteKingIsSafe(movedboard, kingPosition)) filtered_movelist += move + "-";
+                }
             }
         }
         return filtered_movelist;
@@ -432,8 +434,10 @@ public class MoveGenerator {
         for (String move : movelist) {
             if (move.length() == 4) {
                 String movedboard = ChessBoardFactory.simulateMove(move, ChessBoardFactory.getChessBoardString());
-                String kingPosition = MoveConverter.getPieceCoordinates(movedboard, 'k');
-                if (blackKingIsSafe(movedboard, kingPosition)) filtered_movelist += move + "-";
+                if (!movedboard.equals("BBBB")) {
+                    String kingPosition = MoveConverter.getPieceCoordinates(movedboard, 'k');
+                    if (blackKingIsSafe(movedboard, kingPosition)) filtered_movelist += move + "-";
+                }
             }
         }
         return filtered_movelist;

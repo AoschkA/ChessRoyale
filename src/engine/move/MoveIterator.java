@@ -5,12 +5,14 @@ import src.engine.bitmap.ChessBoardFactory;
 import src.entities.Chessboard;
 
 import java.util.Scanner;
+import java.util.concurrent.Callable;
 
-public class MoveIterator {
+public class MoveIterator implements Callable<String> {
     public static int PLAYER;
     public static int PLAYER_WHITE = 1;
     public static int PLAYER_BLACK = 0;
-    public static int VERIFIED_DEPTH = 2;
+    public static int VERIFIED_DEPTH = 4;
+    public static String result;
 
     /*
             Player parameter represents 1 or 0.
@@ -42,11 +44,12 @@ public class MoveIterator {
                     if (score > alpha) {
                         alpha = score;
                         desiredMove = "|" + move;
+                        if (depth == VERIFIED_DEPTH) result = alpha + "|" + beta + desiredMove; // If MoveIterator i shut off early
                     }
                 }
             }
         }
-        return alpha + desiredMove;
+        return alpha + "|" + beta + desiredMove;
     }
 
     public static String alphaBetaMin(int depth, int alpha, int beta, int player, Chessboard chessboard) {
@@ -102,4 +105,8 @@ public class MoveIterator {
         return beta;
     }
 
+    @Override
+    public String call() throws Exception {
+        return alphaBetaMax(VERIFIED_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, ChessBoardFactory.chessboard);
+    }
 }

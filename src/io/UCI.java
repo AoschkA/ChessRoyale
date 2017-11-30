@@ -6,11 +6,16 @@ import src.engine.move.MoveConverter;
 import src.engine.move.MoveIterator;
 import src.exceptions.InvalidMoveException;
 
+import java.sql.Time;
+import java.util.Arrays;
 import java.util.Scanner;
+import java.util.concurrent.*;
 
 public class UCI {
     private static final String ENGINENAME = "ChessRoyale v0.9.4";
     private static final String AUTHOR = "Jonas Praem";
+    private static ExecutorService executor;
+    private static Future<String> future;
 
     public static void uciCommunication() {
         Scanner input = new Scanner(System.in);
@@ -39,6 +44,8 @@ public class UCI {
         // options if any
         ChessBoardFactory.initiateChessBoard();
         MoveIterator.PLAYER = MoveIterator.PLAYER_BLACK;
+
+
         System.out.println("uciok");
     }
 
@@ -82,14 +89,34 @@ public class UCI {
     }
 
     private static void go() {
-        String result = MoveIterator.alphaBetaMax(MoveIterator.VERIFIED_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, MoveIterator.PLAYER, ChessBoardFactory.chessboard);
-        System.out.println("result "+ result);
+        executor = Executors.newSingleThreadExecutor();
+        future = executor.submit(new MoveIterator());
+        String result = "";
+
         try {
+            result = future.get(20, TimeUnit.SECONDS);
+            System.out.println("result "+ result);
             result = MoveConverter.toCoordinateMove(result.substring(result.length()-4, result.length()));
         } catch (InvalidMoveException e) {
-            System.out.println("UNCAUGHT MOVE EXCEPTION");
+            System.out.println("CAUGHT MOVE EXCEPTION");
+        } catch (InterruptedException| ExecutionException e ) {
+            e.printStackTrace();
+            System.out.println("THREAD ERROR");
+        } catch (TimeoutException e) {
+            future.cancel(true);
+            System.out.println("TIMEOUT");
+            result = MoveIterator.result;
+            System.out.println("result "+ result);
+            try {
+                result = MoveConverter.toCoordinateMove(result.substring(result.length() - 4, result.length()));
+            } catch (InvalidMoveException m) {
+                System.out.println("CAUGHT MOVE EXCEPTION");
+            }
+        } finally {
+            System.out.println("bestmove "+ result);
         }
-        System.out.println("bestmove "+ result);
+        executor.shutdownNow();
+
     }
 
     private static void print() {
