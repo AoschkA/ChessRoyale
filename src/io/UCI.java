@@ -12,7 +12,7 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class UCI {
-    private static final String ENGINENAME = "ChessRoyale v0.9.4";
+    private static final String ENGINENAME = "ChessRoyale v0.9.6";
     private static final String AUTHOR = "Jonas Praem";
     private static ExecutorService executor;
     private static Future<String> future;
@@ -95,7 +95,7 @@ public class UCI {
 
         try {
             result = future.get(20, TimeUnit.SECONDS);
-            System.out.println("result "+ result);
+            System.out.println("result "+ result + ", reached depth: "+MoveIterator.REACHED_DEPTH);
             result = MoveConverter.toCoordinateMove(result.substring(result.length()-4, result.length()));
         } catch (InvalidMoveException e) {
             System.out.println("CAUGHT MOVE EXCEPTION");
@@ -106,7 +106,7 @@ public class UCI {
             future.cancel(true);
             System.out.println("TIMEOUT");
             result = MoveIterator.result;
-            System.out.println("result "+ result);
+            System.out.println("result "+ result + ", reached depth: "+MoveIterator.REACHED_DEPTH);
             try {
                 result = MoveConverter.toCoordinateMove(result.substring(result.length() - 4, result.length()));
             } catch (InvalidMoveException m) {
@@ -133,7 +133,6 @@ public class UCI {
     }
 
     private static void makeMove(String input) {
-        BitBoardCalculations.drawChessboard(ChessBoardFactory.chessboard);
         int moveFrom_vertical = (input.charAt(0)-'a');
         int moveFrom_horizontal = ('8'-input.charAt(1));
         int moveTo_vertical = input.charAt(2)-'a';

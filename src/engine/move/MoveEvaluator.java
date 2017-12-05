@@ -148,7 +148,7 @@ public class MoveEvaluator {
             String kingPosition = MoveConverter.getPieceCoordinates(chessboard, 'K');
             if (!MoveGenerator.whiteKingIsSafe(chessboard, kingPosition)) {
                 // normal check
-                counter -= 150000;
+                counter -= 100;
             }
         }
 
@@ -167,7 +167,7 @@ public class MoveEvaluator {
             String kingPosition = MoveConverter.getPieceCoordinates(chessboard, 'k');
             if (!MoveGenerator.blackKingIsSafe(chessboard, kingPosition)) {
                 // normal check
-                counter -= 150000;
+                counter -= 100;
             }
         }
         return counter;
