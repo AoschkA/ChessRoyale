@@ -140,9 +140,7 @@ public class ChessBoardFactory {
     }
 
     public static void movePiece(String move) {
-	    System.out.println(chessBoardString);
 	    String movedChessboard = simulateMove(move, chessBoardString);
-        System.out.println(movedChessboard);
         chessboard = generateChessBoardFromString(movedChessboard);
         updateChessBoardString();
         BitBoardCalculations.drawChessboard(chessboard);

@@ -156,13 +156,13 @@ public class MoveIterator implements Callable<String> {
     public static String iterativeDeepening() {
         IterativeDeepeningMoveSaver.reset();
         IterativeDeepeningTable.reset();
-        String result_depth1 = alphaBetaMax(1, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, ChessBoardFactory.chessboard);
+        String result_depth1 = alphaBetaMax(1, Integer.MIN_VALUE, Integer.MAX_VALUE, PLAYER, ChessBoardFactory.chessboard);
         result = result_depth1.substring(result_depth1.length()-4, result_depth1.length());
         REACHED_DEPTH = 1;
         IterativeDeepeningTable.reset();
         IterativeDeepeningTable.addEntry(2, result);
         IterativeDeepeningMoveSaver.reset();
-        String result_depth2 = alphaBetaMax(2, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, ChessBoardFactory.chessboard);
+        String result_depth2 = alphaBetaMax(2, Integer.MIN_VALUE, Integer.MAX_VALUE, PLAYER, ChessBoardFactory.chessboard);
         result = result_depth2.substring(result_depth2.length()-4, result_depth2.length());
         REACHED_DEPTH = 2;
         IterativeDeepeningMoveSaver.print();
@@ -170,7 +170,7 @@ public class MoveIterator implements Callable<String> {
         IterativeDeepeningTable.addEntry(3, result);
         if (IterativeDeepeningMoveSaver.entryExists(1)) IterativeDeepeningTable.addEntry(2, IterativeDeepeningMoveSaver.getItem(1));
         IterativeDeepeningMoveSaver.reset();
-        String result_depth3 = alphaBetaMax(3, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, ChessBoardFactory.chessboard);
+        String result_depth3 = alphaBetaMax(3, Integer.MIN_VALUE, Integer.MAX_VALUE, PLAYER, ChessBoardFactory.chessboard);
         result = result_depth3.substring(result_depth3.length()-4, result_depth3.length());
         REACHED_DEPTH = 3;
         IterativeDeepeningTable.reset();
@@ -178,7 +178,7 @@ public class MoveIterator implements Callable<String> {
         if (IterativeDeepeningMoveSaver.entryExists(2)) IterativeDeepeningTable.addEntry(3, IterativeDeepeningMoveSaver.getItem(2));
         if (IterativeDeepeningMoveSaver.entryExists(1)) IterativeDeepeningTable.addEntry(2, IterativeDeepeningMoveSaver.getItem(1));
         IterativeDeepeningMoveSaver.reset();
-        String result_depth4 = alphaBetaMax(4, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, ChessBoardFactory.chessboard);
+        String result_depth4 = alphaBetaMax(4, Integer.MIN_VALUE, Integer.MAX_VALUE, PLAYER, ChessBoardFactory.chessboard);
         result = result_depth4.substring(result_depth4.length()-4, result_depth4.length());
         REACHED_DEPTH = 4;
         return result;

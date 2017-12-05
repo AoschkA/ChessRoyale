@@ -4,6 +4,7 @@ import src.engine.bitmap.BitBoardCalculations;
 import src.engine.bitmap.ChessBoardFactory;
 import src.engine.move.MoveConverter;
 import src.engine.move.MoveIterator;
+import src.engine.move.ThreadHandler;
 import src.exceptions.InvalidMoveException;
 
 import java.sql.Time;
@@ -12,10 +13,8 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class UCI {
-    private static final String ENGINENAME = "ChessRoyale v0.9.6";
-    private static final String AUTHOR = "Jonas Praem";
-    private static ExecutorService executor;
-    private static Future<String> future;
+    public static final String ENGINENAME = "ChessRoyale v0.9.6";
+    public static final String AUTHOR = "Jonas Praem";
 
     public static void uciCommunication() {
         Scanner input = new Scanner(System.in);
@@ -33,7 +32,7 @@ public class UCI {
                 break;
             }
             // None UCI communication
-            else if (inputString.startsWith("possiblemoves")) NoneUCICommunication.possibleMoves(inputString);
+            else NoneUCICommunication.noneUCICommunication(inputString);
         }
         input.close();
     }
@@ -89,34 +88,7 @@ public class UCI {
     }
 
     private static void go() {
-        executor = Executors.newSingleThreadExecutor();
-        future = executor.submit(new MoveIterator());
-        String result = "";
-
-        try {
-            result = future.get(20, TimeUnit.SECONDS);
-            System.out.println("result "+ result + ", reached depth: "+MoveIterator.REACHED_DEPTH);
-            result = MoveConverter.toCoordinateMove(result.substring(result.length()-4, result.length()));
-        } catch (InvalidMoveException e) {
-            System.out.println("CAUGHT MOVE EXCEPTION");
-        } catch (InterruptedException| ExecutionException e ) {
-            e.printStackTrace();
-            System.out.println("THREAD ERROR");
-        } catch (TimeoutException e) {
-            future.cancel(true);
-            System.out.println("TIMEOUT");
-            result = MoveIterator.result;
-            System.out.println("result "+ result + ", reached depth: "+MoveIterator.REACHED_DEPTH);
-            try {
-                result = MoveConverter.toCoordinateMove(result.substring(result.length() - 4, result.length()));
-            } catch (InvalidMoveException m) {
-                System.out.println("CAUGHT MOVE EXCEPTION");
-            }
-        } finally {
-            System.out.println("bestmove "+ result);
-        }
-        executor.shutdownNow();
-
+        ThreadHandler.calculateBestMove();
     }
 
     private static void print() {
@@ -138,7 +110,6 @@ public class UCI {
         int moveTo_vertical = input.charAt(2)-'a';
         int moveTo_horizontal = '8'-input.charAt(3);
         String move = Integer.toString(moveFrom_horizontal) + Integer.toString(moveFrom_vertical) + Integer.toString(moveTo_horizontal) + Integer.toString(moveTo_vertical);
-        System.out.println(move);
         ChessBoardFactory.movePiece(move);
     }
 }
