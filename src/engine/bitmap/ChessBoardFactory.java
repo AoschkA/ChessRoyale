@@ -1,6 +1,7 @@
 package src.engine.bitmap;
 
 import src.entities.Chessboard;
+import src.exceptions.ChessboardException;
 
 /*
  * PIECE=WHITE/black
@@ -73,9 +74,14 @@ public class ChessBoardFactory {
 	}
 
 	public static Chessboard generateChessBoardFromString(String chessBoardString) {
-        chessBoardString = flipChessboard(chessBoardString);
-		Chessboard result = BitBoardCalculations.stringToChessBoard(chessBoardString);
-		return result;
+	    if (chessBoardString.length() == 64) {
+            chessBoardString = flipChessboard(chessBoardString);
+            Chessboard result = BitBoardCalculations.stringToChessBoard(chessBoardString);
+            return result;
+        } else {
+	        System.out.println("FAILED CHESSBOARD: " + chessBoardString);
+	        return null;
+        }
 	}
 
 	public static void importFEN(String fen) {
@@ -134,9 +140,7 @@ public class ChessBoardFactory {
     }
 
     public static void movePiece(String move) {
-	    System.out.println(chessBoardString);
 	    String movedChessboard = simulateMove(move, chessBoardString);
-        System.out.println(movedChessboard);
         chessboard = generateChessBoardFromString(movedChessboard);
         updateChessBoardString();
         BitBoardCalculations.drawChessboard(chessboard);

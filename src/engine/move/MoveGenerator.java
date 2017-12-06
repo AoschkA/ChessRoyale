@@ -137,49 +137,6 @@ public class MoveGenerator {
             PAWN_MOVES&=~possibility;
             possibility=PAWN_MOVES&~(PAWN_MOVES-1);
         }
-        //y1,y2,Promotion Type,"P"
-        PAWN_MOVES=(WP>>7)& ENEMY_PIECES &OCCUPIED&Bitmaps.ROW_8&~Bitmaps.COLUMN_A;//pawn promotion by capture right
-        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        while (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+="-"+(index%8-1)+(index%8)+"QP"+(index%8-1)+(index%8)+"RP"+(index%8-1)+(index%8)+"BP"+(index%8-1)+(index%8)+"NP";
-            PAWN_MOVES&=~possibility;
-            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        }
-        PAWN_MOVES=(WP>>9)& ENEMY_PIECES &OCCUPIED&Bitmaps.ROW_8&~Bitmaps.COLUMN_H; //pawn promotion by capture left
-        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        while (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+="-"+(index%8+1)+(index%8)+"QP"+(index%8+1)+(index%8)+"RP"+(index%8+1)+(index%8)+"BP"+(index%8+1)+(index%8)+"NP";
-            PAWN_MOVES&=~possibility;
-            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        }
-        PAWN_MOVES=(WP>>8)&EMPTY&Bitmaps.ROW_8;//pawn promotion by move 1 forward
-        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        while (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+="-"+(index%8)+(index%8)+"QP"+(index%8)+(index%8)+"RP"+(index%8)+(index%8)+"BP"+(index%8)+(index%8)+"NP";
-            PAWN_MOVES&=~possibility;
-            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        }
-        //y1,y2,"WE"
-        //en passant right
-        possibility = (WP << 1)&BP&Bitmaps.ROW_5&~Bitmaps.COLUMN_A&Bitmaps.EP;//shows piece to remove, not the destination
-        if (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+="-"+(index%8-1)+(index%8)+"WE";
-        }
-        //en passant left
-        possibility = (WP >> 1)&BP&Bitmaps.ROW_5&~Bitmaps.COLUMN_H&Bitmaps.EP;//shows piece to remove, not the destination
-        if (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+="-"+(index%8+1)+(index%8)+"WE";
-        }
         return list;
     }
 
@@ -218,47 +175,7 @@ public class MoveGenerator {
             PAWN_MOVES &= ~possibility;
             possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
         }
-        // y1,y2,Promotion Type,"P"
-        PAWN_MOVES = (BP << 7) & ENEMY_PIECES & OCCUPIED & Bitmaps.ROW_1 & ~Bitmaps.COLUMN_H;// pawn promotion by capture right
-        possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
-        while (possibility != 0) {
-            int index = Long.numberOfTrailingZeros(possibility);
-            list += "-" + (index % 8 + 1) + (index % 8) + "qP" + (index % 8 + 1) + (index % 8) + "rP" + (index % 8 + 1)
-                    + (index % 8) + "bP" + (index % 8 + 1) + (index % 8) + "nP";
-            PAWN_MOVES &= ~possibility;
-            possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
-        }
-        PAWN_MOVES = (BP << 9) & ENEMY_PIECES & OCCUPIED & Bitmaps.ROW_1 & ~Bitmaps.COLUMN_A;// pawn promotion by capture left
-        possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
-        while (possibility != 0) {
-            int index = Long.numberOfTrailingZeros(possibility);
-            list += "-" + (index % 8 - 1) + (index % 8) + "qP" + (index % 8 - 1) + (index % 8) + "rP" + (index % 8 - 1)
-                    + (index % 8) + "bP" + (index % 8 - 1) + (index % 8) + "nP";
-            PAWN_MOVES &= ~possibility;
-            possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
-        }
-        PAWN_MOVES = (BP << 8) & EMPTY & Bitmaps.ROW_1;// pawn promotion by move 1 forward
-        possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
-        while (possibility != 0) {
-            int index = Long.numberOfTrailingZeros(possibility);
-            list += "-" + (index % 8) + (index % 8) + "qP" + (index % 8) + (index % 8) + "rP" + (index % 8) + (index % 8)
-                    + "bP" + (index % 8) + (index % 8) + "nP";
-            PAWN_MOVES &= ~possibility;
-            possibility = PAWN_MOVES & ~(PAWN_MOVES - 1);
-        }
-        // y1,y2,"BE"
-        // en passant right
-        possibility = (BP >> 1) & WP & Bitmaps.ROW_4 & ~Bitmaps.COLUMN_H & Bitmaps.EP;// shows piece to remove, not the destination
-        if (possibility != 0) {
-            int index = Long.numberOfTrailingZeros(possibility);
-            list += "" + (index % 8 + 1) + (index % 8) + "BE";
-        }
-        // en passant left
-        possibility = (BP << 1) & WP & Bitmaps.ROW_4 & ~Bitmaps.COLUMN_A & Bitmaps.EP;// shows piece to remove, not the destination
-        if (possibility != 0) {
-            int index = Long.numberOfTrailingZeros(possibility);
-            list += "" + (index % 8 - 1) + (index % 8) + "BE";
-        }
+
         return list;
     }
 
@@ -420,8 +337,10 @@ public class MoveGenerator {
         for (String move : movelist) {
             if (move.length() == 4) {
                 String movedboard = ChessBoardFactory.simulateMove(move, ChessBoardFactory.getChessBoardString());
-                String kingPosition = MoveConverter.getPieceCoordinates(movedboard, 'K');
-                if (whiteKingIsSafe(movedboard, kingPosition)) filtered_movelist += move + "-";
+                if (!movedboard.equals("BBBB")) {
+                    String kingPosition = MoveConverter.getPieceCoordinates(movedboard, 'K');
+                    if (whiteKingIsSafe(movedboard, kingPosition)) filtered_movelist += move + "-";
+                }
             }
         }
         return filtered_movelist;
@@ -432,8 +351,10 @@ public class MoveGenerator {
         for (String move : movelist) {
             if (move.length() == 4) {
                 String movedboard = ChessBoardFactory.simulateMove(move, ChessBoardFactory.getChessBoardString());
-                String kingPosition = MoveConverter.getPieceCoordinates(movedboard, 'k');
-                if (blackKingIsSafe(movedboard, kingPosition)) filtered_movelist += move + "-";
+                if (!movedboard.equals("BBBB")) {
+                    String kingPosition = MoveConverter.getPieceCoordinates(movedboard, 'k');
+                    if (blackKingIsSafe(movedboard, kingPosition)) filtered_movelist += move + "-";
+                }
             }
         }
         return filtered_movelist;

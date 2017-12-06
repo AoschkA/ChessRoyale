@@ -4,13 +4,17 @@ import src.engine.bitmap.BitBoardCalculations;
 import src.engine.bitmap.ChessBoardFactory;
 import src.engine.move.MoveConverter;
 import src.engine.move.MoveIterator;
+import src.engine.move.ThreadHandler;
 import src.exceptions.InvalidMoveException;
 
+import java.sql.Time;
+import java.util.Arrays;
 import java.util.Scanner;
+import java.util.concurrent.*;
 
 public class UCI {
-    private static final String ENGINENAME = "ChessRoyale v0.9.4";
-    private static final String AUTHOR = "Jonas Praem";
+    public static final String ENGINENAME = "Tordenskiold v0.9.6";
+    public static final String AUTHOR = "Jonas Praem";
 
     public static void uciCommunication() {
         Scanner input = new Scanner(System.in);
@@ -28,7 +32,7 @@ public class UCI {
                 break;
             }
             // None UCI communication
-            else if (inputString.startsWith("possiblemoves")) NoneUCICommunication.possibleMoves(inputString);
+            else NoneUCICommunication.noneUCICommunication(inputString);
         }
         input.close();
     }
@@ -39,6 +43,8 @@ public class UCI {
         // options if any
         ChessBoardFactory.initiateChessBoard();
         MoveIterator.PLAYER = MoveIterator.PLAYER_BLACK;
+
+
         System.out.println("uciok");
     }
 
@@ -66,12 +72,12 @@ public class UCI {
             input=input.substring(4);
             ChessBoardFactory.importFEN(input);
         }
-        if (input.contains("b ")) {
-            MoveIterator.PLAYER = MoveIterator.PLAYER_BLACK;
-        }
-        else if (input.contains("w ")) {
-            MoveIterator.PLAYER = MoveIterator.PLAYER_WHITE;
-        }
+//        if (input.contains("b ")) {
+//            MoveIterator.PLAYER = MoveIterator.PLAYER_BLACK;
+//        }
+//        else if (input.contains("w ")) {
+//            MoveIterator.PLAYER = MoveIterator.PLAYER_WHITE;
+//        }
         if (input.contains("moves")) {
             input = input.substring(input.indexOf("moves") + 6);
             while (input.length() > 0) {
@@ -82,14 +88,7 @@ public class UCI {
     }
 
     private static void go() {
-        String result = MoveIterator.alphaBetaMax(MoveIterator.VERIFIED_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, MoveIterator.PLAYER, ChessBoardFactory.chessboard);
-        System.out.println("result "+ result);
-        try {
-            result = MoveConverter.toCoordinateMove(result.substring(result.length()-4, result.length()));
-        } catch (InvalidMoveException e) {
-            System.out.println("UNCAUGHT MOVE EXCEPTION");
-        }
-        System.out.println("bestmove "+ result);
+        ThreadHandler.calculateBestMove();
     }
 
     private static void print() {
@@ -106,13 +105,11 @@ public class UCI {
     }
 
     private static void makeMove(String input) {
-        BitBoardCalculations.drawChessboard(ChessBoardFactory.chessboard);
         int moveFrom_vertical = (input.charAt(0)-'a');
         int moveFrom_horizontal = ('8'-input.charAt(1));
         int moveTo_vertical = input.charAt(2)-'a';
         int moveTo_horizontal = '8'-input.charAt(3);
         String move = Integer.toString(moveFrom_horizontal) + Integer.toString(moveFrom_vertical) + Integer.toString(moveTo_horizontal) + Integer.toString(moveTo_vertical);
-        System.out.println(move);
         ChessBoardFactory.movePiece(move);
     }
 }
