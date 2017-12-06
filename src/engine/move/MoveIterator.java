@@ -165,7 +165,6 @@ public class MoveIterator implements Callable<String> {
         String result_depth2 = alphaBetaMax(2, Integer.MIN_VALUE, Integer.MAX_VALUE, PLAYER, ChessBoardFactory.chessboard);
         result = result_depth2.substring(result_depth2.length()-4, result_depth2.length());
         REACHED_DEPTH = 2;
-        IterativeDeepeningMoveSaver.print();
         IterativeDeepeningTable.reset();
         IterativeDeepeningTable.addEntry(3, result);
         if (IterativeDeepeningMoveSaver.entryExists(1)) IterativeDeepeningTable.addEntry(2, IterativeDeepeningMoveSaver.getItem(1));
@@ -174,6 +173,7 @@ public class MoveIterator implements Callable<String> {
         result = result_depth3.substring(result_depth3.length()-4, result_depth3.length());
         REACHED_DEPTH = 3;
         IterativeDeepeningTable.reset();
+        IterativeDeepeningMoveSaver.print();
         IterativeDeepeningTable.addEntry(4, result);
         if (IterativeDeepeningMoveSaver.entryExists(2)) IterativeDeepeningTable.addEntry(3, IterativeDeepeningMoveSaver.getItem(2));
         if (IterativeDeepeningMoveSaver.entryExists(1)) IterativeDeepeningTable.addEntry(2, IterativeDeepeningMoveSaver.getItem(1));

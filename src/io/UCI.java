@@ -13,7 +13,7 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class UCI {
-    public static final String ENGINENAME = "ChessRoyale v0.9.6";
+    public static final String ENGINENAME = "Tordenskiold v0.9.6";
     public static final String AUTHOR = "Jonas Praem";
 
     public static void uciCommunication() {
@@ -72,12 +72,12 @@ public class UCI {
             input=input.substring(4);
             ChessBoardFactory.importFEN(input);
         }
-        if (input.contains("b ")) {
-            MoveIterator.PLAYER = MoveIterator.PLAYER_BLACK;
-        }
-        else if (input.contains("w ")) {
-            MoveIterator.PLAYER = MoveIterator.PLAYER_WHITE;
-        }
+//        if (input.contains("b ")) {
+//            MoveIterator.PLAYER = MoveIterator.PLAYER_BLACK;
+//        }
+//        else if (input.contains("w ")) {
+//            MoveIterator.PLAYER = MoveIterator.PLAYER_WHITE;
+//        }
         if (input.contains("moves")) {
             input = input.substring(input.indexOf("moves") + 6);
             while (input.length() > 0) {

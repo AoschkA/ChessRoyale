@@ -13,22 +13,17 @@ public class MoveEvaluator {
         if (player == 1) {
             counter += rateMaterialWhite(chessboardString);
             counter -= rateMaterialBlack(chessboardString);
-            counter += rateAttackWhite(chessboardString);
-            counter -= rateAttackBlack(chessboardString);
-            counter += ratePositionalWhite(chessboardString);
+            counter -= rateAttackWhite(chessboardString);
             counter += rateMobilityWhite(chessboardString, depth);
             counter -= rateMobilityBlack(chessboardString, depth);
             chessboardString = ChessBoardFactory.flipChessboard(chessboardString); // Flip board for positional evaluation
-            counter -= ratePositionalBlack(chessboardString);
+            counter += ratePositionalWhite(chessboardString);
         } else {
             counter += rateMaterialBlack(chessboardString);
             counter -= rateMaterialWhite(chessboardString);
-            counter += rateAttackBlack(chessboardString);
-            counter -= rateAttackWhite(chessboardString);
-            counter -= ratePositionalWhite(chessboardString);
+            counter -= rateAttackBlack(chessboardString);
             counter += rateMobilityBlack(chessboardString, depth);
             counter -= rateMobilityWhite(chessboardString, depth);
-            chessboardString = ChessBoardFactory.flipChessboard(chessboardString); // Flip board for positional evaluation
             counter += ratePositionalBlack(chessboardString);
         }
         return counter;
@@ -148,7 +143,7 @@ public class MoveEvaluator {
             String kingPosition = MoveConverter.getPieceCoordinates(chessboard, 'K');
             if (!MoveGenerator.whiteKingIsSafe(chessboard, kingPosition)) {
                 // normal check
-                counter -= 100;
+                counter -= 1000;
             }
         }
 
@@ -167,7 +162,7 @@ public class MoveEvaluator {
             String kingPosition = MoveConverter.getPieceCoordinates(chessboard, 'k');
             if (!MoveGenerator.blackKingIsSafe(chessboard, kingPosition)) {
                 // normal check
-                counter -= 100;
+                counter -= 1000;
             }
         }
         return counter;
